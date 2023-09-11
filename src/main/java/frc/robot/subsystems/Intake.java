@@ -10,7 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-  /** Creates a new Wheel. */
+  /** Creates a new Intake. */
 
   private TalonFX m_intakeMotor = new TalonFX(32);
 

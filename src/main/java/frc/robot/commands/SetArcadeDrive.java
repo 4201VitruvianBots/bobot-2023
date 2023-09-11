@@ -6,19 +6,24 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.DriveTrain;
 
-public class SetIntakeOutput extends CommandBase {
-  /** Creates a new SetIntakeOutput. */
-  private Intake m_intake;
-  private DoubleSupplier m_output;
+public class SetArcadeDrive extends CommandBase {
+  /** Creates a new SetArcadeDrive. */
 
-  public SetIntakeOutput(Intake intake, DoubleSupplier output) {
+  private DriveTrain m_driveTrain;
+  private DoubleSupplier m_throttle, m_turn;
+  private double joystickX, joystickY, throttle;
+
+  public SetArcadeDrive(DriveTrain driveTrain, DoubleSupplier throttle, DoubleSupplier turn) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_intake = intake;
-    m_output = output;
-    addRequirements(m_intake);
+    m_driveTrain = driveTrain;
+    m_throttle = throttle;
+    m_turn = turn;
+
+    addRequirements(m_driveTrain);
   }
 
   // Called when the command is initially scheduled.
@@ -28,14 +33,15 @@ public class SetIntakeOutput extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setPercentOutput(m_output.getAsDouble());
+    joystickY = m_throttle.getAsDouble();
+    // joystickX = MathUtil.applyDeadband(m_turn.getAsDouble(), 0.05);
+
+    m_driveTrain.setMotorArcadeDrive(joystickY);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_intake.setPercentOutput(0.0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
