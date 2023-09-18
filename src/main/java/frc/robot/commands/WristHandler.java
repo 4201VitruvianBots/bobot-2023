@@ -5,12 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.CONTROL_MODE;
+import frc.robot.Constants.SETPOINT;
 import frc.robot.subsystems.Wrist;
 
 public class WristHandler extends CommandBase {
   private  Wrist m_Wrist;
-  private Wrist m_desiredState;
-  public WristHandler( Wrist wrist,Wrist desiredState) {
+  private SETPOINT m_desiredState;
+  public WristHandler(Wrist wrist,SETPOINT desiredState) {
     m_Wrist = m_Wrist;
     m_desiredState = desiredState;
 
@@ -20,12 +22,15 @@ public class WristHandler extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_Wrist.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
+    m_Wrist.setUserSetpoint(true);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Wrist.setDesiredSetpoint();
+    m_Wrist.SetWristDesiredSetpoint(m_desiredState);
   }
 
   // Called once the command ends or is interrupted.
