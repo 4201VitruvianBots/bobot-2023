@@ -55,6 +55,7 @@ public final class Constants {
 
     public static final int wristMotor = 30;
     public static final int intakeMotor = 31;
+    public static final int flywheelMotor = 32;
   }
 
   public static final class CONSTANTS {
@@ -148,6 +149,8 @@ public final class Constants {
 
     public static final double kvTurnVoltSecondsPerRadian = 1.47; // originally 1.5
     public static final double kaTurnVoltSecondsSquaredPerRadian = 0.348; // originally 0.3
+ 
+
   }
 
   public static final class VISION {
@@ -207,15 +210,37 @@ public final class Constants {
               Units.inchesToMeters(20)),
           new Rotation3d()),
     };
+    
   }
 
   public static class AUTO {
     public static double kAutoBalanceTimeout = 2.0;
     public static final double kAutoBalanceAngleThresholdDegrees = 2.0;
   }
+  public enum SETPOINT {
+    // Units are in Radians
+    
+    STOWED(Units.degreesToRadians(98.0)),
+    INTAKING_LOW_CUBE(Units.degreesToRadians(-13.5)),
+    INTAKING_LOW_CONE(Units.degreesToRadians(16)),
+    SCORE_LOW_REVERSE(Units.degreesToRadians(-14.0)),
+    SCORE_HIGH_CUBE(Units.degreesToRadians(147.0)),
+    INTAKING_EXTENDED_CUBE(SCORE_HIGH_CUBE.get());
 
+    private final double value;
+
+    SETPOINT(final double value) {
+      this.value = value;
+    }
+
+    public double get() {
+      return value;
+    }
+    
+  }
   public enum CONTROL_MODE {
     OPEN_LOOP,
     CLOSED_LOOP
   }
   }
+  
