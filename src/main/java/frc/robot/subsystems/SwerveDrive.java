@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.unmanaged.Unmanaged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.SWERVE_DRIVE;
@@ -78,7 +80,10 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   private MechanismLigament2d m_swerveChassis2d;
 
   @SuppressWarnings("CanBeFinal")
+  private boolean m_simOverride = false; // DO NOT MAKE FINAL. WILL BREAK UNIT TESTS
 
+  private double m_simYaw;
+  private double m_simRoll;
   private DoublePublisher pitchPub, rollPub, yawPub, odometryXPub, odometryYPub, odometryYawPub;
 
   private boolean useHeadingTarget = false;
@@ -231,7 +236,8 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   public double getRollDegrees() {
-   return m_pigeon.getRoll();
+    if (m_simOverride) return m_simRoll;
+    else return m_pigeon.getRoll();
   }
 
   public double getHeadingDegrees() {
@@ -361,10 +367,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     pitchPub.set(getPitchDegrees());
     rollPub.set(getRollDegrees() + getRollOffsetDegrees());
     yawPub.set(getHeadingDegrees());
-      odometryXPub.set(getOdometry().getEstimatedPosition().getX());
-      odometryYPub.set(getOdometry().getEstimatedPosition().getY());
-      odometryYawPub.set(getOdometry().getEstimatedPosition().getRotation().getDegrees());
-    }
+  }
 
   @Override
   public void periodic() {
@@ -378,6 +381,15 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
   @Override
   public void simulationPeriodic() {
+    ChassisSpeeds chassisSpeed =
+        SWERVE_DRIVE.kSwerveKinematics.toChassisSpeeds(
+            ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));
+
+    double dt = 0.01; 
+    m_simYaw += chassisSpeed.omegaRadiansPerSecond * dt;
+
+    Unmanaged.feedEnable(20);
+    m_pigeon.getSimCollection().setRawHeading(-Units.radiansToDegrees(m_simYaw));
   }
 
   @Override
