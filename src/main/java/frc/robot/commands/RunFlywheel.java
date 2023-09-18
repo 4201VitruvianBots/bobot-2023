@@ -37,31 +37,7 @@ public class RunFlywheel extends CommandBase {
 
   }
 
-  public enum SETPOINT {
-    // Units are in Radians
-    STOWED(Units.degreesToRadians(98.0)),
-    INTAKING_LOW_CUBE(Units.degreesToRadians(-13.5)),
-    INTAKING_LOW_CONE(Units.degreesToRadians(16)),
-    SCORE_LOW_REVERSE(Units.degreesToRadians(-14.0)),
-    SCORE_LOW_CONE(Units.degreesToRadians(120.0)),
-    SCORE_LOW_CUBE(SCORE_LOW_CONE.get()),
-    SCORE_MID_CONE(Units.degreesToRadians(150.5)),
-    SCORE_MID_CUBE(Units.degreesToRadians(132.0)),
-    SCORE_HIGH_CONE(Units.degreesToRadians(151.5)),
-    SCORE_HIGH_CUBE(Units.degreesToRadians(147.0)),
-    INTAKING_EXTENDED_CONE(Units.degreesToRadians(121.3)),
-    INTAKING_EXTENDED_CUBE(SCORE_HIGH_CUBE.get());
 
-    private final double value;
-
-    SETPOINT(final double value) {
-      this.value = value;
-    }
-
-    public double get() {
-      return value;
-    }
-  }
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
