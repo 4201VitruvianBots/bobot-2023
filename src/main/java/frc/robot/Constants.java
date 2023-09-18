@@ -219,14 +219,18 @@ public final class Constants {
   }
   public enum SETPOINT {
     // Units are in Radians
-    
+
+
     STOWED(Units.degreesToRadians(98.0)),
     INTAKING_LOW_CUBE(Units.degreesToRadians(-13.5)),
-    INTAKING_LOW_CONE(Units.degreesToRadians(16)),
     SCORE_LOW_REVERSE(Units.degreesToRadians(-14.0)),
     SCORE_HIGH_CUBE(Units.degreesToRadians(147.0)),
     INTAKING_EXTENDED_CUBE(SCORE_HIGH_CUBE.get());
+   
 
+    public double getWristSetpointRadians() {
+      return value;
+    }
     private final double value;
 
     SETPOINT(final double value) {
