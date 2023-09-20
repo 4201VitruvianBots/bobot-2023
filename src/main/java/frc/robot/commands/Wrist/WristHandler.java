@@ -14,7 +14,7 @@ public class WristHandler extends CommandBase {
   private SETPOINT m_desiredState;
 
   public WristHandler(Wrist wrist, SETPOINT desiredState) {
-    m_Wrist = m_Wrist;
+    m_Wrist = wrist;
     m_desiredState = desiredState;
 
     addRequirements(m_Wrist);

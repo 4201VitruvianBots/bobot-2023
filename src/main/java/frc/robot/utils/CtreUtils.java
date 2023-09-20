@@ -1,11 +1,8 @@
 package frc.robot.utils;
 
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.ctre.phoenix.sensors.SensorTimeBase;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
@@ -13,16 +10,22 @@ public final class CtreUtils {
   public static TalonFXConfiguration generateTurnMotorConfig() {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
-    motorConfig.slot0.kF = 0.0;
-    motorConfig.slot0.kP = 0.6; // 0.8;
-    motorConfig.slot0.kI = 0.0001;
-    motorConfig.slot0.integralZone = 121.904762;
-    motorConfig.slot0.kD = 12; // 0.0;
-    motorConfig.slot0.allowableClosedloopError = 0.0;
+    motorConfig.Slot0.kV = 0.0;
+    motorConfig.Slot0.kP = 0.6; // 0.8;
+    motorConfig.Slot0.kI = 0.0001;
+    //    motorConfig.Slot0.integralZone = 121.904762;
+    motorConfig.Slot0.kD = 12; // 0.0;
+    //    motorConfig.Slot0.allowableClosedloopError = 0.0;
+    motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
-    motorConfig.supplyCurrLimit = new SupplyCurrentLimitConfiguration(true, 25, 40, 0.1);
+    motorConfig.CurrentLimits.SupplyCurrentLimit = 25;
+    motorConfig.CurrentLimits.SupplyCurrentThreshold = 40;
+    motorConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
 
-    motorConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
+    motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    //    motorConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
 
     return motorConfig;
   }
@@ -30,27 +33,34 @@ public final class CtreUtils {
   public static TalonFXConfiguration generateDriveMotorConfig() {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
-    motorConfig.slot0.kF = 0.0;
-    motorConfig.slot0.kP = 0.1;
-    motorConfig.slot0.kI = 0.0;
-    motorConfig.slot0.kD = 0.0;
+    motorConfig.Slot0.kV = 0.0;
+    motorConfig.Slot0.kP = 0.1;
+    motorConfig.Slot0.kI = 0.0;
+    motorConfig.Slot0.kD = 0.0;
 
-    motorConfig.supplyCurrLimit = new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1);
+    motorConfig.CurrentLimits.SupplyCurrentLimit = 35;
+    motorConfig.CurrentLimits.SupplyCurrentThreshold = 60;
+    motorConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
 
-    motorConfig.openloopRamp = 0.25;
-    motorConfig.closedloopRamp = 0.1;
+    motorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.25; // TODO adjust this later
+    motorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.1; // TODO Adjust this later
 
-    motorConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
+    motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+
+    //    motorConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
     return motorConfig;
   }
 
-  public static CANCoderConfiguration generateCanCoderConfig() {
-    CANCoderConfiguration sensorConfig = new CANCoderConfiguration();
+  public static CANcoderConfiguration generateCanCoderConfig() {
+    CANcoderConfiguration sensorConfig = new CANcoderConfiguration();
 
-    sensorConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
-    sensorConfig.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
-    sensorConfig.sensorDirection = false;
-    sensorConfig.sensorTimeBase = SensorTimeBase.PerSecond;
+    //    sensorConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+    sensorConfig.MagnetSensor.AbsoluteSensorRange =
+        AbsoluteSensorRangeValue.Unsigned_0To1; // TODO Adjust code for this
+    //    sensorConfig.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+    sensorConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    //    sensorConfig.sensorTimeBase = SensorTimeBase.PerSecond;
 
     return sensorConfig;
   }

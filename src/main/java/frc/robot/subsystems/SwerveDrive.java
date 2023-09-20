@@ -4,10 +4,10 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -44,28 +44,28 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       SWERVE_MODULE_POSITION.FRONT_LEFT,
                       new TalonFX(CAN.frontLeftTurnMotor),
                       new TalonFX(CAN.frontLeftDriveMotor),
-                      new CANCoder(CAN.frontLeftCanCoder),
+                      new CANcoder(CAN.frontLeftCanCoder),
                       SWERVE_DRIVE.frontLeftCANCoderOffset),
               SWERVE_MODULE_POSITION.FRONT_RIGHT,
                   new SwerveModule(
                       SWERVE_MODULE_POSITION.FRONT_RIGHT,
                       new TalonFX(CAN.frontRightTurnMotor),
                       new TalonFX(CAN.frontRightDriveMotor),
-                      new CANCoder(CAN.frontRightCanCoder),
+                      new CANcoder(CAN.frontRightCanCoder),
                       SWERVE_DRIVE.frontRightCANCoderOffset),
               SWERVE_MODULE_POSITION.BACK_LEFT,
                   new SwerveModule(
                       SWERVE_MODULE_POSITION.BACK_LEFT,
                       new TalonFX(CAN.backLeftTurnMotor),
                       new TalonFX(CAN.backLeftDriveMotor),
-                      new CANCoder(CAN.backLeftCanCoder),
+                      new CANcoder(CAN.backLeftCanCoder),
                       SWERVE_DRIVE.backLeftCANCoderOffset),
               SWERVE_MODULE_POSITION.BACK_RIGHT,
                   new SwerveModule(
                       SWERVE_MODULE_POSITION.BACK_RIGHT,
                       new TalonFX(CAN.backRightTurnMotor),
                       new TalonFX(CAN.backRightDriveMotor),
-                      new CANCoder(CAN.backRightCanCoder),
+                      new CANcoder(CAN.backRightCanCoder),
                       SWERVE_DRIVE.backRightCANCoderOffset)));
 
   private final Pigeon2 m_pigeon = new Pigeon2(CAN.pigeon, "rio");
@@ -98,7 +98,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   private double m_currentMaxVelocity = m_maxVelocity;
 
   public SwerveDrive() {
-    m_pigeon.configFactoryDefault();
+    m_pigeon.getConfigurator().apply(new Pigeon2Configuration());
     m_pigeon.setYaw(0);
     m_odometry =
         new SwerveDrivePoseEstimator(
@@ -203,7 +203,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
   public void setOdometry(Pose2d pose) {
     if (RobotBase.isSimulation()) {
-      m_pigeon.getSimCollection().setRawHeading(pose.getRotation().getDegrees());
+      m_pigeon.getSimState().setRawYaw(pose.getRotation().getDegrees());
     } else m_pigeon.setYaw(pose.getRotation().getDegrees());
     m_odometry.resetPosition(getHeadingRotation2d(), getSwerveDriveModulePositionsArray(), pose);
 
@@ -218,7 +218,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   public void setRollOffset() {
-    m_rollOffset = -m_pigeon.getRoll(); // -2.63
+    m_rollOffset = -m_pigeon.getRoll().getValue(); // -2.63
   }
 
   public double getRollOffsetDegrees() {
@@ -226,15 +226,15 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   public double getPitchDegrees() {
-    return m_pigeon.getPitch();
+    return m_pigeon.getPitch().getValue();
   }
 
   public double getRollDegrees() {
-    return m_pigeon.getRoll();
+    return m_pigeon.getRoll().getValue();
   }
 
   public double getHeadingDegrees() {
-    return m_pigeon.getYaw();
+    return m_pigeon.getYaw().getValue();
   }
 
   public Rotation2d getHeadingRotation2d() {
@@ -303,10 +303,15 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     return m_turnController;
   }
 
-  public void setNeutralMode(NeutralMode mode) {
+  public void setNeutral() {
     for (SwerveModule module : m_swerveModules.values()) {
-      //      module.setDriveNeutralMode(mode);
-      module.setTurnNeutralMode(mode);
+      module.setTurnNeutral();
+    }
+  }
+
+  public void setBrake() {
+    for (SwerveModule module : m_swerveModules.values()) {
+      module.setTurnBrake();
     }
   }
 
@@ -324,7 +329,6 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     //      m_pigeon.setYaw(180);
     //    else
     m_pigeon.setYaw(0);
-    m_pigeon.setAccumZAngle(0);
   }
 
   public void updateOdometry() {
