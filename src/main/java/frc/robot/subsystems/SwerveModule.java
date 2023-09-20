@@ -30,7 +30,12 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private final SWERVE_MODULE_POSITION m_modulePosition;
   private final int m_moduleNumber;
   private final TalonFX m_turnMotor;
+  private final DutyCycleOut driveMotorDutyControl = new DutyCycleOut(0);
+  private final VelocityVoltage driveMotorVelocityControl = new VelocityVoltage(0);
   private final TalonFX m_driveMotor;
+  private final PositionVoltage turnMotorPositionControl = new PositionVoltage(0);
+  private final StaticBrake brakeControl = new StaticBrake();
+  private final NeutralOut neutralControl = new NeutralOut();
   private final CANcoder m_angleEncoder;
   private final double m_angleOffset;
   private double m_lastAngle;
@@ -145,12 +150,12 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     if (isOpenLoop) {
       double percentOutput =
           desiredState.speedMetersPerSecond / SWERVE_DRIVE.kMaxSpeedMetersPerSecond;
-      m_driveMotor.setControl(new DutyCycleOut(percentOutput));
+      m_driveMotor.setControl(driveMotorDutyControl.withOutput(percentOutput));
     } else {
       double velocity =
           desiredState.speedMetersPerSecond / (SWERVE_MODULE.kDriveMotorDistancePerPulse * 10);
       m_driveMotor.setControl(
-          new VelocityVoltage(velocity).withFeedForward(desiredState.speedMetersPerSecond));
+          driveMotorVelocityControl.withVelocity(velocity).withFeedForward(desiredState.speedMetersPerSecond));
     }
 
     double angle =
@@ -160,7 +165,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
             : desiredState.angle
                 .getDegrees(); // Prevent rotating module if speed is less than 1%. Prevents
     // Jittering.
-    m_turnMotor.setControl(new PositionDutyCycle(angle / 360));
+    m_turnMotor.setControl(turnMotorPositionControl.withPosition(angle / 360));
     m_lastAngle = angle;
   }
 
@@ -181,19 +186,19 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public void setDriveBrake() {
-    m_driveMotor.setControl(new StaticBrake());
+    m_driveMotor.setControl(brakeControl);
   }
 
   public void setDriveNeutral() {
-    m_driveMotor.setControl(new NeutralOut());
+    m_driveMotor.setControl(neutralControl);
   }
 
   public void setTurnBrake() {
-    m_turnMotor.setControl(new StaticBrake());
+    m_turnMotor.setControl(brakeControl);
   }
 
   public void setTurnNeutral() {
-    m_turnMotor.setControl(new NeutralOut());
+    m_turnMotor.setControl(neutralControl);
   }
 
   private void initSmartDashboard() {
