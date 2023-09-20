@@ -19,6 +19,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Autos;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.Flywheel.RunFlywheel;
+import frc.robot.commands.Intake.RunIntake;
+import frc.robot.commands.Kicker.RunKicker;
+import frc.robot.commands.Wrist.WristHandler;
+import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Wrist;
@@ -47,8 +54,7 @@ public class RobotContainer {
   private final Trigger[] rightJoystickTriggers = new Trigger[2]; // right joystick buttons
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(2);
+  private final CommandXboxController m_driverController = new CommandXboxController(2);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
