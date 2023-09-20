@@ -78,7 +78,6 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   private MechanismLigament2d m_swerveChassis2d;
 
   @SuppressWarnings("CanBeFinal")
-
   private DoublePublisher pitchPub, rollPub, yawPub, odometryXPub, odometryYPub, odometryYawPub;
 
   private boolean useHeadingTarget = false;
@@ -231,7 +230,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   public double getRollDegrees() {
-   return m_pigeon.getRoll();
+    return m_pigeon.getRoll();
   }
 
   public double getHeadingDegrees() {
@@ -361,10 +360,10 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     pitchPub.set(getPitchDegrees());
     rollPub.set(getRollDegrees() + getRollOffsetDegrees());
     yawPub.set(getHeadingDegrees());
-      odometryXPub.set(getOdometry().getEstimatedPosition().getX());
-      odometryYPub.set(getOdometry().getEstimatedPosition().getY());
-      odometryYawPub.set(getOdometry().getEstimatedPosition().getRotation().getDegrees());
-    }
+    odometryXPub.set(getOdometry().getEstimatedPosition().getX());
+    odometryYPub.set(getOdometry().getEstimatedPosition().getY());
+    odometryYawPub.set(getOdometry().getEstimatedPosition().getRotation().getDegrees());
+  }
 
   @Override
   public void periodic() {
@@ -377,8 +376,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   @Override
-  public void simulationPeriodic() {
-  }
+  public void simulationPeriodic() {}
 
   @Override
   public void close() throws Exception {

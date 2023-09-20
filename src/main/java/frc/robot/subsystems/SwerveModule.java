@@ -215,8 +215,8 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private void updateSmartDashboard() {
     moduleMotorHeadingPub.set(getHeadingDegrees());
     moduleEncoderHealthPub.set(getInitSuccess());
-      moduleEncoderHeadingPub.set(m_angleEncoder.getAbsolutePosition());
-    }
+    moduleEncoderHeadingPub.set(m_angleEncoder.getAbsolutePosition());
+  }
 
   public void updateLog() {
     moduleTurnCurrentEntry.append(m_turnMotor.getMotorOutputVoltage());
@@ -230,9 +230,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   @Override
-  public void simulationPeriodic() {
-   
-  }
+  public void simulationPeriodic() {}
 
   @SuppressWarnings("RedundantThrows")
   @Override
