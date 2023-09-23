@@ -72,7 +72,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
     m_turnMotor.getConfigurator().apply(CtreUtils.generateTurnMotorConfig());
     //    m_turnMotor.setSelectedSensorPosition(0);
-    m_turnMotor.setRotorPosition(0);
+    m_turnMotor.setPosition(0);
 
     m_driveMotor.getConfigurator().apply(CtreUtils.generateDriveMotorConfig());
 
@@ -124,7 +124,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   public void resetAngle(double angle) {
     double newAngle =
         (360 * m_angleEncoder.getAbsolutePosition().getValue()) - m_angleOffset + angle;
-    m_turnMotor.setRotorPosition(newAngle / SWERVE_MODULE.kTurningMotorDistancePerPulse);
+    m_turnMotor.setPosition(newAngle / SWERVE_MODULE.kTurningMotorDistancePerPulse);
   }
 
   public double getHeadingDegrees() {
@@ -155,7 +155,9 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
       double velocity =
           desiredState.speedMetersPerSecond / (SWERVE_MODULE.kDriveMotorDistancePerPulse * 10);
       m_driveMotor.setControl(
-          driveMotorVelocityControl.withVelocity(velocity).withFeedForward(desiredState.speedMetersPerSecond));
+          driveMotorVelocityControl
+              .withVelocity(velocity)
+              .withFeedForward(desiredState.speedMetersPerSecond));
     }
 
     double angle =
