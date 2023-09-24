@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.SWERVE_DRIVE;
 import frc.robot.Constants.SWERVE_DRIVE.SWERVE_MODULE_POSITION;
 import frc.robot.Constants.SWERVE_MODULE;
@@ -54,6 +55,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
   private DoublePublisher moduleMotorHeadingPub, moduleEncoderHeadingPub;
   private BooleanPublisher moduleEncoderHealthPub;
+  private PositionVoltage turnMotorVoltage = new PositionVoltage(0).withSlot(0);
 
   public SwerveModule(
       SWERVE_MODULE_POSITION modulePosition,
@@ -71,14 +73,14 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     initModuleHeading();
 
     var turnMotorConfig = CtreUtils.generateTurnMotorConfig();
-    turnMotorConfig.Feedback.SensorToMechanismRatio = SWERVE_MODULE.kTurningMotorGearRatio;
+    var driveMotorConfig = CtreUtils.generateDriveMotorConfig();
+    turnMotorConfig.Feedback.RotorToSensorRatio = Constants.SWERVE_MODULE.kTurningMotorGearRatio;
 
     m_turnMotor.getConfigurator().apply(turnMotorConfig);
+    m_driveMotor.getConfigurator().apply(driveMotorConfig);
+    m_turnMotor.setControl(turnMotorVoltage.withPosition(0));
     //    m_turnMotor.setSelectedSensorPosition(0);
-    m_turnMotor.setPosition(0);
-
-    m_driveMotor.getConfigurator().apply(CtreUtils.generateDriveMotorConfig());
-
+    // m_turnMotor.setPosition(0);
     // m_angleEncoder.configMagnetOffset(m_angleOffset);
     m_lastAngle = getHeadingDegrees();
 
@@ -126,13 +128,12 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
   public void resetAngle(double angle) {
     double newAngle =
-        (360 * m_angleEncoder.getAbsolutePosition().getValue()) - m_angleOffset + angle;
-    m_turnMotor.setPosition(newAngle);
+        (360.0 * m_angleEncoder.getAbsolutePosition().getValue()) - m_angleOffset + angle;
+    m_turnMotor.setRotorPosition(newAngle / 360.0);
   }
 
   public double getHeadingDegrees() {
-    return (360 * m_turnMotor.getRotorPosition().getValue())
-        * SWERVE_MODULE.kTurningMotorDistancePerPulse;
+    return 360 * m_turnMotor.getRotorPosition().getValue();
   }
 
   public Rotation2d getHeadingRotation2d() {
@@ -140,11 +141,15 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public double getVelocityMetersPerSecond() {
-    return m_driveMotor.getRotorVelocity().getValue() * SWERVE_MODULE.kWheelDiameterMeters;
+    return m_driveMotor.getRotorVelocity().getValue()
+        * SWERVE_MODULE.kWheelDiameterMeters
+        * Math.PI;
   }
 
   public double getDriveMeters() {
-    return m_driveMotor.getRotorPosition().getValue() * SWERVE_MODULE.kWheelDiameterMeters;
+    return m_driveMotor.getRotorPosition().getValue()
+        * SWERVE_MODULE.kWheelDiameterMeters
+        * Math.PI;
   }
 
   public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
@@ -156,7 +161,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
       m_driveMotor.setControl(driveMotorDutyControl.withOutput(percentOutput));
     } else {
       double velocity =
-          desiredState.speedMetersPerSecond / (SWERVE_MODULE.kDriveMotorDistancePerPulse * 10);
+          desiredState.speedMetersPerSecond / (SWERVE_MODULE.kWheelDiameterMeters * Math.PI);
       m_driveMotor.setControl(
           driveMotorVelocityControl
               .withVelocity(velocity)
@@ -170,7 +175,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
             : desiredState.angle
                 .getDegrees(); // Prevent rotating module if speed is less than 1%. Prevents
     // Jittering.
-    m_turnMotor.setControl(turnMotorPositionControl.withPosition(angle / 360));
+    m_turnMotor.setControl(turnMotorPositionControl.withPosition(angle / 360.0));
     m_lastAngle = angle;
   }
 
