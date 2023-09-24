@@ -5,8 +5,8 @@
 package frc.robot.commands.Wrist;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.CONTROL_MODE;
-import frc.robot.Constants.SETPOINT;
+import frc.robot.constants.BASE.CONTROL_MODE;
+import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.subsystems.Wrist;
 
 public class WristHandler extends CommandBase {

@@ -1,13 +1,13 @@
 package frc.robot.commands.swerve;
 
-import static frc.robot.Constants.AUTO.kAutoBalanceAngleThresholdDegrees;
+import static frc.robot.constants.AUTO.kAutoBalanceAngleThresholdDegrees;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.SWERVE_DRIVE;
+import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.subsystems.SwerveDrive;
 
 public class AutoBalance extends CommandBase {
@@ -90,13 +90,11 @@ public class AutoBalance extends CommandBase {
     states =
         new SwerveModuleState[] {
           new SwerveModuleState(
-              SWERVE_DRIVE.kMaxSpeedMetersPerSecond * 0.011, Rotation2d.fromDegrees(-45)),
+              DRIVE.kMaxSpeedMetersPerSecond * 0.011, Rotation2d.fromDegrees(-45)),
+          new SwerveModuleState(DRIVE.kMaxSpeedMetersPerSecond * 0.011, Rotation2d.fromDegrees(45)),
           new SwerveModuleState(
-              SWERVE_DRIVE.kMaxSpeedMetersPerSecond * 0.011, Rotation2d.fromDegrees(45)),
-          new SwerveModuleState(
-              SWERVE_DRIVE.kMaxSpeedMetersPerSecond * 0.011, Rotation2d.fromDegrees(-45)),
-          new SwerveModuleState(
-              SWERVE_DRIVE.kMaxSpeedMetersPerSecond * 0.011, Rotation2d.fromDegrees(45)),
+              DRIVE.kMaxSpeedMetersPerSecond * 0.011, Rotation2d.fromDegrees(-45)),
+          new SwerveModuleState(DRIVE.kMaxSpeedMetersPerSecond * 0.011, Rotation2d.fromDegrees(45)),
         };
     m_swerveDrive.setSwerveModuleStates(states, false);
   }

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.utils.ModuleMap.MODULE_POSITION;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -28,46 +30,45 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CAN;
-import frc.robot.Constants.SWERVE_DRIVE;
-import frc.robot.Constants.SWERVE_DRIVE.SWERVE_MODULE_POSITION;
+import frc.robot.constants.CAN;
+import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.utils.ModuleMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
-  private final HashMap<SWERVE_MODULE_POSITION, SwerveModule> m_swerveModules =
+  private final HashMap<MODULE_POSITION, SwerveModule> m_swerveModules =
       new HashMap<>(
           Map.of(
-              SWERVE_MODULE_POSITION.FRONT_LEFT,
-                  new SwerveModule(
-                      SWERVE_MODULE_POSITION.FRONT_LEFT,
-                      new TalonFX(CAN.frontLeftTurnMotor),
-                      new TalonFX(CAN.frontLeftDriveMotor),
-                      new CANCoder(CAN.frontLeftCanCoder),
-                      SWERVE_DRIVE.frontLeftCANCoderOffset),
-              SWERVE_MODULE_POSITION.FRONT_RIGHT,
-                  new SwerveModule(
-                      SWERVE_MODULE_POSITION.FRONT_RIGHT,
-                      new TalonFX(CAN.frontRightTurnMotor),
-                      new TalonFX(CAN.frontRightDriveMotor),
-                      new CANCoder(CAN.frontRightCanCoder),
-                      SWERVE_DRIVE.frontRightCANCoderOffset),
-              SWERVE_MODULE_POSITION.BACK_LEFT,
-                  new SwerveModule(
-                      SWERVE_MODULE_POSITION.BACK_LEFT,
-                      new TalonFX(CAN.backLeftTurnMotor),
-                      new TalonFX(CAN.backLeftDriveMotor),
-                      new CANCoder(CAN.backLeftCanCoder),
-                      SWERVE_DRIVE.backLeftCANCoderOffset),
-              SWERVE_MODULE_POSITION.BACK_RIGHT,
-                  new SwerveModule(
-                      SWERVE_MODULE_POSITION.BACK_RIGHT,
-                      new TalonFX(CAN.backRightTurnMotor),
-                      new TalonFX(CAN.backRightDriveMotor),
-                      new CANCoder(CAN.backRightCanCoder),
-                      SWERVE_DRIVE.backRightCANCoderOffset)));
+              MODULE_POSITION.FRONT_LEFT,
+              new SwerveModule(
+                  MODULE_POSITION.FRONT_LEFT,
+                  new TalonFX(CAN.frontLeftTurnMotor),
+                  new TalonFX(CAN.frontLeftDriveMotor),
+                  new CANCoder(CAN.frontLeftCanCoder),
+                  DRIVE.frontLeftCANCoderOffset),
+              MODULE_POSITION.FRONT_RIGHT,
+              new SwerveModule(
+                  MODULE_POSITION.FRONT_RIGHT,
+                  new TalonFX(CAN.frontRightTurnMotor),
+                  new TalonFX(CAN.frontRightDriveMotor),
+                  new CANCoder(CAN.frontRightCanCoder),
+                  DRIVE.frontRightCANCoderOffset),
+              MODULE_POSITION.BACK_LEFT,
+              new SwerveModule(
+                  MODULE_POSITION.BACK_LEFT,
+                  new TalonFX(CAN.backLeftTurnMotor),
+                  new TalonFX(CAN.backLeftDriveMotor),
+                  new CANCoder(CAN.backLeftCanCoder),
+                  DRIVE.backLeftCANCoderOffset),
+              MODULE_POSITION.BACK_RIGHT,
+              new SwerveModule(
+                  MODULE_POSITION.BACK_RIGHT,
+                  new TalonFX(CAN.backRightTurnMotor),
+                  new TalonFX(CAN.backRightDriveMotor),
+                  new CANCoder(CAN.backRightCanCoder),
+                  DRIVE.backRightCANCoderOffset)));
 
   private final Pigeon2 m_pigeon = new Pigeon2(CAN.pigeon, "rio");
   private double m_rollOffset;
@@ -88,18 +89,16 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   private boolean useHeadingTarget = false;
   private double m_desiredHeadingRadians;
 
-  private final PIDController m_xController =
-      new PIDController(SWERVE_DRIVE.kP_X, SWERVE_DRIVE.kI_X, SWERVE_DRIVE.kD_X);
-  private final PIDController m_yController =
-      new PIDController(SWERVE_DRIVE.kP_Y, SWERVE_DRIVE.kI_Y, SWERVE_DRIVE.kD_Y);
+  private final PIDController m_xController = new PIDController(DRIVE.kP_X, DRIVE.kI_X, DRIVE.kD_X);
+  private final PIDController m_yController = new PIDController(DRIVE.kP_Y, DRIVE.kI_Y, DRIVE.kD_Y);
   private final PIDController m_turnController =
-      new PIDController(SWERVE_DRIVE.kP_Theta, SWERVE_DRIVE.kI_Theta, SWERVE_DRIVE.kD_Theta);
+      new PIDController(DRIVE.kP_Theta, DRIVE.kI_Theta, DRIVE.kD_Theta);
 
   private double m_rotationOutput;
 
   ChassisSpeeds chassisSpeeds;
-  private final double m_maxVelocity = SWERVE_DRIVE.kMaxSpeedMetersPerSecond;
-  private final double m_limitedVelocity = SWERVE_DRIVE.kLimitedSpeedMetersPerSecond;
+  private final double m_maxVelocity = DRIVE.kMaxSpeedMetersPerSecond;
+  private final double m_limitedVelocity = DRIVE.kLimitedSpeedMetersPerSecond;
   private double m_currentMaxVelocity = m_maxVelocity;
 
   public SwerveDrive() {
@@ -107,7 +106,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     m_pigeon.setYaw(0);
     m_odometry =
         new SwerveDrivePoseEstimator(
-            SWERVE_DRIVE.kSwerveKinematics,
+            DRIVE.kSwerveKinematics,
             getHeadingRotation2d(),
             getSwerveDriveModulePositionsArray(),
             new Pose2d());
@@ -140,11 +139,11 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     if (m_limitJoystickInput) {
       throttle *= m_limitedVelocity;
       strafe *= m_limitedVelocity;
-      rotation *= SWERVE_DRIVE.kLimitedRotationRadiansPerSecond;
+      rotation *= DRIVE.kLimitedRotationRadiansPerSecond;
     } else {
       throttle *= m_currentMaxVelocity;
       strafe *= m_currentMaxVelocity;
-      rotation *= SWERVE_DRIVE.kMaxRotationRadiansPerSecond;
+      rotation *= DRIVE.kMaxRotationRadiansPerSecond;
     }
 
     /** Setting field vs Robot Relative */
@@ -160,8 +159,8 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
               : new ChassisSpeeds(throttle, strafe, rotation);
     }
 
-    Map<SWERVE_MODULE_POSITION, SwerveModuleState> moduleStates =
-        ModuleMap.of(SWERVE_DRIVE.kSwerveKinematics.toSwerveModuleStates(chassisSpeeds));
+    Map<MODULE_POSITION, SwerveModuleState> moduleStates =
+        ModuleMap.of(DRIVE.kSwerveKinematics.toSwerveModuleStates(chassisSpeeds));
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
         ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), m_currentMaxVelocity);
@@ -202,7 +201,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   public void setChassisSpeed(ChassisSpeeds chassisSpeeds) {
-    var states = SWERVE_DRIVE.kSwerveKinematics.toSwerveModuleStates(chassisSpeeds);
+    var states = DRIVE.kSwerveKinematics.toSwerveModuleStates(chassisSpeeds);
     setSwerveModuleStates(states, false);
   }
 
@@ -212,10 +211,9 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     } else m_pigeon.setYaw(pose.getRotation().getDegrees());
     m_odometry.resetPosition(getHeadingRotation2d(), getSwerveDriveModulePositionsArray(), pose);
 
-    for (var position : SWERVE_MODULE_POSITION.values()) {
+    for (var position : MODULE_POSITION.values()) {
       var transform =
-          new Transform2d(
-              SWERVE_DRIVE.kModuleTranslations.get(position), Rotation2d.fromDegrees(0));
+          new Transform2d(DRIVE.kModuleTranslations.get(position), Rotation2d.fromDegrees(0));
       var modulePose = pose.plus(transform);
       getSwerveModule(position).resetAngle(pose.getRotation().getDegrees());
       getSwerveModule(position).setModulePose(modulePose);
@@ -251,20 +249,20 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     return m_odometry.getEstimatedPosition();
   }
 
-  public SwerveModule getSwerveModule(SWERVE_MODULE_POSITION modulePosition) {
+  public SwerveModule getSwerveModule(MODULE_POSITION modulePosition) {
     return m_swerveModules.get(modulePosition);
   }
 
-  public Map<SWERVE_MODULE_POSITION, SwerveModuleState> getModuleStates() {
-    Map<SWERVE_MODULE_POSITION, SwerveModuleState> map = new HashMap<>();
-    for (SWERVE_MODULE_POSITION i : m_swerveModules.keySet())
+  public Map<MODULE_POSITION, SwerveModuleState> getModuleStates() {
+    Map<MODULE_POSITION, SwerveModuleState> map = new HashMap<>();
+    for (MODULE_POSITION i : m_swerveModules.keySet())
       map.put(i, m_swerveModules.get(i).getState());
     return map;
   }
 
-  public Map<SWERVE_MODULE_POSITION, SwerveModulePosition> getModulePositions() {
-    Map<SWERVE_MODULE_POSITION, SwerveModulePosition> map = new HashMap<>();
-    for (SWERVE_MODULE_POSITION i : m_swerveModules.keySet())
+  public Map<MODULE_POSITION, SwerveModulePosition> getModulePositions() {
+    Map<MODULE_POSITION, SwerveModulePosition> map = new HashMap<>();
+    for (MODULE_POSITION i : m_swerveModules.keySet())
       map.put(i, m_swerveModules.get(i).getPosition());
     return map;
   }
@@ -273,15 +271,15 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     return ModuleMap.orderedValues(getModulePositions(), new SwerveModulePosition[0]);
   }
 
-  public Map<SWERVE_MODULE_POSITION, Pose2d> getModulePoses() {
-    Map<SWERVE_MODULE_POSITION, Pose2d> map = new HashMap<>();
-    for (SWERVE_MODULE_POSITION i : m_swerveModules.keySet())
+  public Map<MODULE_POSITION, Pose2d> getModulePoses() {
+    Map<MODULE_POSITION, Pose2d> map = new HashMap<>();
+    for (MODULE_POSITION i : m_swerveModules.keySet())
       map.put(i, m_swerveModules.get(i).getModulePose());
     return map;
   }
 
   public boolean getModuleInitStatus() {
-    for (SWERVE_MODULE_POSITION i : m_swerveModules.keySet()) {
+    for (MODULE_POSITION i : m_swerveModules.keySet()) {
       if (!m_swerveModules.get(i).getInitSuccess()) {
         return false;
       }
@@ -339,7 +337,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     for (SwerveModule module : ModuleMap.orderedValuesList(m_swerveModules)) {
       Transform2d moduleTransform =
           new Transform2d(
-              SWERVE_DRIVE.kModuleTranslations.get(module.getModulePosition()),
+              DRIVE.kModuleTranslations.get(module.getModulePosition()),
               module.getHeadingRotation2d());
       module.setModulePose(getPoseMeters().transformBy(moduleTransform));
     }
@@ -381,7 +379,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   @Override
   public void simulationPeriodic() {
     ChassisSpeeds chassisSpeed =
-        SWERVE_DRIVE.kSwerveKinematics.toChassisSpeeds(
+        DRIVE.kSwerveKinematics.toChassisSpeeds(
             ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));
 
     double dt = 0.01;
