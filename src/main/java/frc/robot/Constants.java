@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.CONSTANTS.kCANCoderSensorUnitsPerRotation;
 import static frc.robot.Constants.CONSTANTS.kFalconSensorUnitsPerRotation;
 
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -73,8 +72,6 @@ public final class Constants {
 
     public static final double gearRatio = 48.0 / 16.0;
     public static final DCMotor gearBox = DCMotor.getFalcon500(1);
-    public static final double kMotorDistancePerPulse =
-        360.0 / (kFalconSensorUnitsPerRotation * gearRatio);
 
     public static double kF = 0;
     public static double kP = 0.2;
@@ -136,13 +133,6 @@ public final class Constants {
 
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(1);
     public static final DCMotor kTurnGearbox = DCMotor.getFalcon500(1);
-
-    public static final double kDriveMotorDistancePerPulse =
-        (kWheelDiameterMeters * Math.PI) / (kFalconSensorUnitsPerRotation * kDriveMotorGearRatio);
-    public static final double kTurningMotorDistancePerPulse =
-        360.0 / (kFalconSensorUnitsPerRotation * kTurningMotorGearRatio);
-    public static final double kTurnEncoderDistancePerPulse =
-        360.0 / kCANCoderSensorUnitsPerRotation;
 
     public static final double ksDriveVoltSecondsPerMeter = 0.605 / 12;
     public static final double kvDriveVoltSecondsSquaredPerMeter = 1.72 / 12;
