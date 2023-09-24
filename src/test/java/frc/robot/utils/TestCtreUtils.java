@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestCtreUtils implements AutoCloseable {
     static final double DELTA = 1e-3; // acceptable deviation range
+    static final double WAIT_TIME = 0.2;
 
     TalonFX m_testMotor;
 
@@ -39,16 +40,14 @@ public class TestCtreUtils implements AutoCloseable {
 
     @Test
     public void testSensorRatioConfig() {
-        var waitTime = 0.2;
         var testMotorSim = m_testMotor.getSimState();
 
         var testConfig = CtreUtils.generateTurnMotorConfig();
         testConfig.Feedback.SensorToMechanismRatio = Constants.SWERVE_MODULE.kTurningMotorGearRatio;
-
         m_testMotor.getConfigurator().apply(testConfig);
 
         testMotorSim.setRawRotorPosition(-1);
-        m_testMotor.getPosition().waitForUpdate(waitTime);
+        m_testMotor.getPosition().waitForUpdate(WAIT_TIME);
 
         var expectedRotation = 1.0 / Constants.SWERVE_MODULE.kTurningMotorGearRatio;
         var testPosition =  m_testMotor.getPosition().getValue();
@@ -56,7 +55,7 @@ public class TestCtreUtils implements AutoCloseable {
         assertEquals(expectedRotation, testPosition, DELTA);
 
         testMotorSim.setRawRotorPosition(1);
-        m_testMotor.getPosition().waitForUpdate(waitTime);
+        m_testMotor.getPosition().waitForUpdate(WAIT_TIME);
 
         expectedRotation = -1.0 / Constants.SWERVE_MODULE.kTurningMotorGearRatio;
         testPosition =  m_testMotor.getPosition().getValue();
