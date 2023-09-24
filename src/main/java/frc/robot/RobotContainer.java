@@ -6,10 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Autos;
 import frc.robot.commands.Flywheel.RunFlywheel;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Kicker.RunKicker;
@@ -17,7 +17,6 @@ import frc.robot.commands.Wrist.WristHandler;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.constants.USB;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Wrist;
@@ -30,7 +29,6 @@ import frc.robot.subsystems.Wrist;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Wrist m_wrist = new Wrist();
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final IntakeShooter m_intakeShooter = new IntakeShooter();
@@ -91,6 +89,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return new WaitCommand(0);
   }
 }
