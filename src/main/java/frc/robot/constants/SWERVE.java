@@ -63,13 +63,6 @@ public final class SWERVE {
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(1);
     public static final DCMotor kTurnGearbox = DCMotor.getFalcon500(1);
 
-    public static final double kDriveMotorDistancePerPulse =
-        (kWheelDiameterMeters * Math.PI) / (kFalconSensorUnitsPerRotation * kDriveMotorGearRatio);
-    public static final double kTurningMotorDistancePerPulse =
-        360.0 / (kFalconSensorUnitsPerRotation * kTurningMotorGearRatio);
-    public static final double kTurnEncoderDistancePerPulse =
-        360.0 / kCANCoderSensorUnitsPerRotation;
-
     public static final double ksDriveVoltSecondsPerMeter = 0.605 / 12;
     public static final double kvDriveVoltSecondsSquaredPerMeter = 1.72 / 12;
     public static final double kaDriveVoltSecondsSquaredPerMeter = 0.193 / 12;

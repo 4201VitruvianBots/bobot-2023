@@ -64,8 +64,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private final FlywheelSim m_turnMotorModel =
       new FlywheelSim(
           // Sim Values
-//          LinearSystemId.identifyVelocitySystem(0.25, 0.000001)
-              LinearSystemId.identifyVelocitySystem(0.7, 0.001),
+          LinearSystemId.identifyVelocitySystem(0.25, 0.000001),
           MODULE.kTurnGearbox,
           MODULE.kTurningMotorGearRatio,
           VecBuilder.fill(0));
@@ -73,7 +72,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private final FlywheelSim m_driveMotorModel =
       new FlywheelSim(
           // Sim Values
-          LinearSystemId.identifyVelocitySystem(0.2, 0.001),
+          LinearSystemId.identifyVelocitySystem(0.8, 0.6),
           MODULE.kDriveGearbox,
           MODULE.kDriveMotorGearRatio);
 
@@ -124,18 +123,15 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   private void initModuleHeading() {
-    configureCANCoder(m_angleEncoder, CtreUtils.generateCanCoderConfig());
+    var encoderConfig = CtreUtils.generateCanCoderConfig();
+    encoderConfig.MagnetSensor.MagnetOffset = m_angleOffset;
+    configureCANCoder(m_angleEncoder, encoderConfig);
     resetAngleToAbsolute();
 
     // Check if the offset was applied properly. Delay to give it some time to set
     if (RobotBase.isReal()) {
       Timer.delay(0.1);
-      m_initSuccess =
-          Math.abs(
-                  getHeadingDegrees()
-                      + m_angleOffset
-                      - (360 * m_angleEncoder.getAbsolutePosition().getValue()))
-              < 1.0;
+      m_initSuccess = m_angleEncoder.getAbsolutePosition().getValue() < 1.0;
     } else m_initSuccess = true;
   }
 
@@ -152,8 +148,8 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public void resetAngle(double angle) {
-    double newAngle = getHeadingDegrees() - m_angleOffset + angle;
-    m_turnMotor.setPosition(newAngle / 360.0);
+//    double newAngle = getHeadingDegrees() - m_angleOffset + angle;
+    m_turnMotor.setPosition(angle / 360.0);
   }
 
   public double getHeadingDegrees() {
@@ -254,8 +250,11 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   public void simulationPeriodic() {
     // TODO: Fix sim
     if (usePhysicsSim) {
-      m_turnMotorModel.setInputVoltage(MathUtil.clamp(m_turnMotor.get() * 12.0, -12, 12));
-      m_driveMotorModel.setInputVoltage(MathUtil.clamp(m_driveMotor.get() * 12.0, -12, 12));
+      m_turnMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+      m_driveMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+
+      m_turnMotorModel.setInputVoltage(MathUtil.clamp(m_turnMotorSim.getMotorVoltage(), -12, 12));
+      m_driveMotorModel.setInputVoltage(MathUtil.clamp(m_driveMotorSim.getMotorVoltage(), -12, 12));
 
       double currentTime = Timer.getFPGATimestamp();
       double dt = currentTime - m_lastTime;
@@ -267,14 +266,10 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
       Unmanaged.feedEnable(20);
 
-      m_turnMotorSim.setRawRotorPosition(m_turnMotorSimDistance);
-      m_driveMotorSim.setRawRotorPosition(m_driveMotorSimDistance);
+      m_turnMotorSim.setRawRotorPosition(m_turnMotorSimDistance * MODULE.kTurningMotorGearRatio);
+      m_driveMotorSim.setRawRotorPosition(m_driveMotorSimDistance * MODULE.kDriveMotorGearRatio);
       m_turnMotorSim.setRotorVelocity(m_turnMotorModel.getAngularVelocityRPM() / 60.0);
       m_driveMotorSim.setRotorVelocity(m_driveMotorModel.getAngularVelocityRPM() / 60.0);
-      System.out.println(m_turnMotorModel.getAngularVelocityRPM());
-
-      m_turnMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
-      m_driveMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
       m_lastTime = currentTime;
     } else {
