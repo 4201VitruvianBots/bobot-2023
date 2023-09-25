@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
  * methods to flip these values based on the current alliance color.
  */
 public final class SimConstants {
+  public static boolean usePhysicsSim = true;
+
   public static final double fieldLength = Units.inchesToMeters(651.25);
   public static final double fieldWidth = Units.inchesToMeters(315.5);
   public static final double tapeWidth = Units.inchesToMeters(2.0);

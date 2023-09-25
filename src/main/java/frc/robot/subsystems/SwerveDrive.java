@@ -24,7 +24,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
@@ -36,6 +35,7 @@ import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.utils.ModuleMap;
 import java.util.HashMap;
 import java.util.Map;
+import org.littletonrobotics.junction.Logger;
 
 public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
@@ -354,25 +354,17 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
   private void initSmartDashboard() {
     SmartDashboard.putData(this);
-
-    var swerveTab =
-        NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Swerve");
-    pitchPub = swerveTab.getDoubleTopic("Pitch").publish();
-    rollPub = swerveTab.getDoubleTopic("Roll").publish();
-    yawPub = swerveTab.getDoubleTopic("Yaw").publish();
-    odometryXPub = swerveTab.getDoubleTopic("Odometry X").publish();
-    odometryYPub = swerveTab.getDoubleTopic("Odometry Y").publish();
-    odometryYawPub = swerveTab.getDoubleTopic("Odometry Yaw").publish();
   }
 
-  private void updateSmartDashboard() {
-    SmartDashboard.putNumber("gyro " + m_pigeon + " heading", getHeadingDegrees());
-    SmartDashboard.putBoolean("Swerve Module Init Status", getModuleInitStatus());
-    SmartDashboard.putNumber("Roll Offset", m_rollOffset);
+  private void updateSmartDashboard() {}
 
-    pitchPub.set(getPitchDegrees());
-    rollPub.set(getRollDegrees() + getRollOffsetDegrees());
-    yawPub.set(getHeadingDegrees());
+  private void updateLog() {
+    Logger.getInstance().recordOutput("Swerve/Module Init Status", getModuleInitStatus());
+    Logger.getInstance().recordOutput("Swerve/Roll Offset", getRollOffsetDegrees());
+
+    Logger.getInstance().recordOutput("Swerve/Pitch", getPitchDegrees());
+    Logger.getInstance().recordOutput("Swerve/Roll", getRollDegrees() + getRollOffsetDegrees());
+    Logger.getInstance().recordOutput("Swerve/Yaw", getHeadingDegrees());
   }
 
   @Override
@@ -383,6 +375,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
     updateOdometry();
     updateSmartDashboard();
+    updateLog();
   }
 
   @Override

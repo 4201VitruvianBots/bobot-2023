@@ -17,6 +17,7 @@ import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.wrist.WristHandler;
 import frc.robot.constants.BASE;
 import frc.robot.constants.USB;
+import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Wrist;
@@ -32,6 +33,7 @@ public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final Wrist m_wrist = new Wrist();
   private final IntakeShooter m_intakeShooter = new IntakeShooter();
+  private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
 
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
@@ -89,5 +91,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return new WaitCommand(0);
+  }
+
+  public void periodic() {
+    m_fieldSim.periodic();
   }
 }

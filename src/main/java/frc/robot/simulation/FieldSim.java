@@ -9,14 +9,12 @@ import static frc.robot.utils.ChargedUpNodeMask.*;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.VISION.CAMERA_SERVER;
 import frc.robot.subsystems.*;
 import frc.robot.utils.ChargedUpNodeMask;
 import frc.robot.utils.ModuleMap;
@@ -26,9 +24,6 @@ import java.util.stream.Collectors;
 
 public class FieldSim extends SubsystemBase implements AutoCloseable {
   private final SwerveDrive m_swerveDrive;
-  private final Vision m_vision;
-  private final Wrist m_wrist;
-  private final Controls m_controls;
 
   private final Field2d m_field2d = new Field2d();
   private List<PathPlannerTrajectory> m_displayedTrajectories = new ArrayList<>();
@@ -40,11 +35,8 @@ public class FieldSim extends SubsystemBase implements AutoCloseable {
   private Pose2d robotPose = new Pose2d(0, 0, new Rotation2d(0));
   private Pose2d intakePose;
 
-  public FieldSim(SwerveDrive swerveDrive, Vision vision, Wrist wrist, Controls controls) {
+  public FieldSim(SwerveDrive swerveDrive) {
     m_swerveDrive = swerveDrive;
-    m_vision = vision;
-    m_wrist = wrist;
-    m_controls = controls;
 
     initSim();
   }
@@ -139,22 +131,22 @@ public class FieldSim extends SubsystemBase implements AutoCloseable {
     m_field2d.setRobotPose(robotPose);
 
     if (RobotBase.isSimulation()) {
-      m_field2d
-          .getObject("localizerTagPoses")
-          .setPoses(m_vision.getTagPoses2d(CAMERA_SERVER.LIMELIGHT));
-      m_field2d
-          .getObject("localizerPoses")
-          .setPoses(m_vision.getRobotPoses2d(CAMERA_SERVER.LIMELIGHT));
-      m_field2d
-          .getObject("localizerPose")
-          .setPose(m_vision.getRobotPose2d(CAMERA_SERVER.LIMELIGHT));
+      //      m_field2d
+      //          .getObject("localizerTagPoses")
+      //          .setPoses(m_vision.getTagPoses2d(CAMERA_SERVER.LIMELIGHT));
+      //      m_field2d
+      //          .getObject("localizerPoses")
+      //          .setPoses(m_vision.getRobotPoses2d(CAMERA_SERVER.LIMELIGHT));
+      //      m_field2d
+      //          .getObject("localizerPose")
+      //          .setPose(m_vision.getRobotPose2d(CAMERA_SERVER.LIMELIGHT));
     }
-
-    intakePose =
-        m_swerveDrive
-            .getPoseMeters()
-            .transformBy(new Transform2d(null, m_swerveDrive.getHeadingRotation2d()));
-    m_field2d.getObject("Intake Pose").setPose(intakePose);
+    //
+    //    intakePose =
+    //        m_swerveDrive
+    //            .getPoseMeters()
+    //            .transformBy(new Transform2d(null, m_swerveDrive.getHeadingRotation2d()));
+    //    m_field2d.getObject("Intake Pose").setPose(intakePose);
 
     m_field2d
         .getObject("Grid Node")

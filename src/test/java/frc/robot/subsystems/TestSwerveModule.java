@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
-import edu.wpi.first.wpilibj.simulation.SimHooks;
 import frc.robot.constants.CAN;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,8 +40,7 @@ public class TestSwerveModule implements AutoCloseable {
     DriverStationSim.notifyNewData();
 
     /* delay ~100ms so the devices can start up and enable */
-    //        Timer.delay(0.100);
-    SimHooks.stepTiming(0.1);
+    Timer.delay(0.100);
   }
 
   @AfterEach

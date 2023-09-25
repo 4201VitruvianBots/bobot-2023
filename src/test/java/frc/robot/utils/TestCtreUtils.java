@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
-import edu.wpi.first.wpilibj.simulation.SimHooks;
 import frc.robot.constants.SWERVE.MODULE;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class TestCtreUtils implements AutoCloseable {
   static final double DELTA = 1e-3; // acceptable deviation range
@@ -29,8 +29,7 @@ public class TestCtreUtils implements AutoCloseable {
     DriverStationSim.notifyNewData();
 
     /* delay ~100ms so the devices can start up and enable */
-    //        Timer.delay(0.100);
-    SimHooks.stepTiming(0.1);
+    Timer.delay(0.100);
   }
 
   @AfterEach
@@ -38,7 +37,7 @@ public class TestCtreUtils implements AutoCloseable {
     close();
   }
 
-  @Disabled
+  @Test
   public void testSensorRatioConfig() {
     var testMotorSim = m_testMotor.getSimState();
 

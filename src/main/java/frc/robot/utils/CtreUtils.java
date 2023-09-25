@@ -1,31 +1,38 @@
 package frc.robot.utils;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 
 public final class CtreUtils {
   public static TalonFXConfiguration generateTurnMotorConfig() {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
+    motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     motorConfig.Slot0.kV = 0.0;
     motorConfig.Slot0.kP = 5.0; // 0.8;
     motorConfig.Slot0.kI = 0.0000;
     //    motorConfig.Slot0.integralZone = 121.904762;
     motorConfig.Slot0.kD = 0.000; // 0.0;
     //    motorConfig.Slot0.allowableClosedloopError = 0.0;
-    motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+
+    motorConfig.Voltage.PeakForwardVoltage = 12;
+    motorConfig.Voltage.PeakReverseVoltage = -12;
 
     motorConfig.CurrentLimits.SupplyCurrentLimit = 25;
     motorConfig.CurrentLimits.SupplyCurrentThreshold = 40;
     motorConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
+    motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-    //    motorConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
 
     return motorConfig;
   }
@@ -33,14 +40,19 @@ public final class CtreUtils {
   public static TalonFXConfiguration generateDriveMotorConfig() {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
+    motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     motorConfig.Slot0.kV = 0.1185;
     motorConfig.Slot0.kP = 0.24;
     motorConfig.Slot0.kI = 0.0;
     motorConfig.Slot0.kD = 0.0;
 
+    motorConfig.Voltage.PeakForwardVoltage = 12;
+    motorConfig.Voltage.PeakReverseVoltage = -12;
+
     motorConfig.CurrentLimits.SupplyCurrentLimit = 35;
     motorConfig.CurrentLimits.SupplyCurrentThreshold = 60;
     motorConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
+    motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     motorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.25; // TODO adjust this later
     motorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.1; // TODO Adjust this later
@@ -48,19 +60,15 @@ public final class CtreUtils {
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    //    motorConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
     return motorConfig;
   }
 
   public static CANcoderConfiguration generateCanCoderConfig() {
     CANcoderConfiguration sensorConfig = new CANcoderConfiguration();
 
-    //    sensorConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
     sensorConfig.MagnetSensor.AbsoluteSensorRange =
         AbsoluteSensorRangeValue.Unsigned_0To1; // TODO Adjust code for this
-    //    sensorConfig.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
     sensorConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    //    sensorConfig.sensorTimeBase = SensorTimeBase.PerSecond;
 
     return sensorConfig;
   }
@@ -106,5 +114,37 @@ public final class CtreUtils {
       newAngle += 360;
     }
     return newAngle;
+  }
+
+  public static boolean configureTalonFx(TalonFX motor, TalonFXConfiguration config) {
+    StatusCode steerStatus = StatusCode.StatusCodeNotInitialized;
+    for (int i = 0; i < 5; i++) {
+      steerStatus = motor.getConfigurator().apply(config);
+      if (steerStatus.isOK()) return true;
+      if (RobotBase.isReal()) Timer.delay(0.02);
+    }
+    if (!steerStatus.isOK())
+      System.out.println(
+          "Could not apply configs to TalonFx ID: "
+              + motor.getDeviceID()
+              + ". Error code: "
+              + steerStatus);
+    return false;
+  }
+
+  public static boolean configureCANCoder(CANcoder cancoder, CANcoderConfiguration config) {
+    StatusCode steerStatus = StatusCode.StatusCodeNotInitialized;
+    for (int i = 0; i < 5; i++) {
+      steerStatus = cancoder.getConfigurator().apply(config);
+      if (steerStatus.isOK()) return true;
+      if (RobotBase.isReal()) Timer.delay(0.02);
+    }
+    if (!steerStatus.isOK())
+      System.out.println(
+          "Could not apply configs to CANCoder ID: "
+              + cancoder.getDeviceID()
+              + ". Error code: "
+              + steerStatus);
+    return false;
   }
 }
