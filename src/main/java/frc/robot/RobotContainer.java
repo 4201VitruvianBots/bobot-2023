@@ -6,18 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.USB;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.Flywheel.RunFlywheel;
 import frc.robot.commands.Intake.RunIntake;
 import frc.robot.commands.Kicker.RunKicker;
-import frc.robot.commands.Swerve.SetSwerveDrive;
 import frc.robot.commands.Wrist.WristHandler;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Wrist;
@@ -30,28 +28,24 @@ import frc.robot.subsystems.Wrist;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final Wrist m_wrist = new Wrist();
-
   private final IntakeShooter m_intakeShooter = new IntakeShooter();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(2);
+  private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
+  private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
+  private final CommandXboxController xboxController =
+      new CommandXboxController(USB.xBoxController);
 
-  static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
-
-  static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
-  public CommandXboxController xboxController = new CommandXboxController(USB.xBoxController);
-
-  public Trigger[] leftJoystickTriggers = new Trigger[2]; // left joystick buttons
-  public Trigger[] rightJoystickTriggers = new Trigger[2]; // right joystick buttons
+  private final Trigger[] leftJoystickTriggers = new Trigger[2]; // left joystick buttons
+  private final Trigger[] rightJoystickTriggers = new Trigger[2]; // right joystick buttons
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     initializeSubsystems();
     // Configure the trigger bindings
     configureBindings();
+    initializeSubsystems();
   }
 
   public void initializeSubsystems() {
@@ -78,17 +72,11 @@ public class RobotContainer {
     for (int i = 0; i < rightJoystickTriggers.length; i++)
       rightJoystickTriggers[i] = new JoystickButton(rightJoystick, (i + 1));
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-
-    m_driverController.leftTrigger().whileTrue(new RunIntake(m_intakeShooter));
-    m_driverController.rightTrigger().whileTrue(new RunKicker(m_intakeShooter));
-    m_driverController.y().whileTrue(new RunFlywheel(m_intakeShooter));
-    m_driverController
+    xboxController.leftTrigger().whileTrue(new RunIntake(m_intakeShooter));
+    xboxController.rightTrigger().whileTrue(new RunKicker(m_intakeShooter));
+    xboxController.y().whileTrue(new RunFlywheel(m_intakeShooter));
+    xboxController
         .leftBumper()
         .whileTrue((new WristHandler(m_wrist, Constants.SETPOINT.INTAKING_LOW_CUBE)));
   }
@@ -100,6 +88,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return new WaitCommand(0);
   }
 }

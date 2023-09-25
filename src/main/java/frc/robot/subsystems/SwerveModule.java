@@ -17,16 +17,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -39,49 +32,43 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private final SWERVE_MODULE_POSITION m_modulePosition;
   private final int m_moduleNumber;
   private final TalonFX m_turnMotor;
-  private final DutyCycleOut driveMotorDutyControl = new DutyCycleOut(0);
-  private final VelocityVoltage driveMotorVelocityControl = new VelocityVoltage(0);
   private final TalonFX m_driveMotor;
-  private final PositionVoltage turnMotorPositionControl = new PositionVoltage(0);
-  private final StaticBrake brakeControl = new StaticBrake();
-  private final NeutralOut neutralControl = new NeutralOut();
   private final CANcoder m_angleEncoder;
+
   private final double m_angleOffset;
   private double m_lastAngle;
   private Pose2d m_pose;
   private boolean m_initSuccess = false;
+
+  private final DutyCycleOut driveMotorDutyControl = new DutyCycleOut(0);
+  private final VelocityVoltage driveMotorVelocityControl = new VelocityVoltage(0);
+  private final PositionVoltage turnPositionControl = new PositionVoltage(0);
+  private final StaticBrake brakeControl = new StaticBrake();
+  private final NeutralOut neutralControl = new NeutralOut();
 
   private final SimpleMotorFeedforward feedforward =
       new SimpleMotorFeedforward(
           SWERVE_MODULE.ksDriveVoltSecondsPerMeter,
           SWERVE_MODULE.kvDriveVoltSecondsSquaredPerMeter,
           SWERVE_MODULE.kaDriveVoltSecondsSquaredPerMeter);
-  // Logging setup
-
-  private final DoubleLogEntry moduleTurnCurrentEntry;
-  private final DoubleLogEntry moduleDriveCurrentEntry;
-
-  private DoublePublisher moduleMotorHeadingPub, moduleEncoderHeadingPub;
-  private BooleanPublisher moduleEncoderHealthPub;
-  private PositionVoltage turnMotorVoltage = new PositionVoltage(0).withSlot(0);
 
   private TalonFXSimState m_turnMotorSim;
   private TalonFXSimState m_driveMotorSim;
 
   private final FlywheelSim m_turnMotorModel =
-          new FlywheelSim(
-                  // Sim Values
-                  LinearSystemId.identifyVelocitySystem(0.25, 0.000001),
-                  SWERVE_MODULE.kTurnGearbox,
-                  SWERVE_MODULE.kTurningMotorGearRatio,
-                  VecBuilder.fill(0));
+      new FlywheelSim(
+          // Sim Values
+          LinearSystemId.identifyVelocitySystem(0.25, 0.000001),
+          SWERVE_MODULE.kTurnGearbox,
+          SWERVE_MODULE.kTurningMotorGearRatio,
+          VecBuilder.fill(0));
 
   private final FlywheelSim m_driveMotorModel =
-          new FlywheelSim(
-                  // Sim Values
-                  LinearSystemId.identifyVelocitySystem(0.8, 0.6),
-                  SWERVE_MODULE.kDriveGearbox,
-                  SWERVE_MODULE.kDriveMotorGearRatio);
+      new FlywheelSim(
+          // Sim Values
+          LinearSystemId.identifyVelocitySystem(0.8, 0.6),
+          SWERVE_MODULE.kDriveGearbox,
+          SWERVE_MODULE.kDriveMotorGearRatio);
 
   private double m_turnMotorSimDistance;
   private double m_driveMotorSimDistance;
@@ -109,18 +96,13 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
     m_turnMotor.getConfigurator().apply(turnMotorConfig);
     m_driveMotor.getConfigurator().apply(driveMotorConfig);
-    m_turnMotor.setControl(turnMotorVoltage.withPosition(0));
+    m_turnMotor.setControl(turnPositionControl.withPosition(0));
     //    m_turnMotor.setSelectedSensorPosition(0);
     // m_turnMotor.setPosition(0);
     // m_angleEncoder.configMagnetOffset(m_angleOffset);
     m_lastAngle = getHeadingDegrees();
 
     initSmartDashboard();
-    DataLog m_log = DataLogManager.getLog();
-    moduleTurnCurrentEntry =
-        new DoubleLogEntry(m_log, "/swerve/" + m_modulePosition.name() + "/turnCurrent");
-    moduleDriveCurrentEntry =
-        new DoubleLogEntry(m_log, "/swerve/" + m_modulePosition.name() + "/driveCurrent");
 
     // To distinguish modules in CommandScheduler
     setName("SwerveModule_" + m_modulePosition.ordinal());
@@ -164,7 +146,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
   public void resetAngle(double angle) {
     double newAngle = getHeadingDegrees() - m_angleOffset + angle;
-    m_turnMotor.setRotorPosition(newAngle / 360.0);
+    m_turnMotor.setPosition(newAngle / 360.0);
   }
 
   public double getHeadingDegrees() {
@@ -210,7 +192,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
             : desiredState.angle
                 .getDegrees(); // Prevent rotating module if speed is less than 1%. Prevents
     // Jittering.
-    m_turnMotor.setControl(turnMotorPositionControl.withPosition(angle / 360.0));
+    m_turnMotor.setControl(turnPositionControl.withPosition(angle / 360.0));
     m_lastAngle = angle;
 
     if (!RobotBase.isReal()) {
@@ -251,31 +233,11 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     m_turnMotor.setControl(neutralControl);
   }
 
-  private void initSmartDashboard() {
-    var moduleTab =
-        NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Swerve");
-    moduleEncoderHeadingPub =
-        moduleTab.getDoubleTopic("Module (" + m_moduleNumber + ") Encoder Heading").publish();
-    moduleTab
-        .getDoubleTopic("Module (" + m_moduleNumber + ") Encoder Offset")
-        .publish()
-        .set(m_angleOffset);
-    moduleEncoderHealthPub =
-        moduleTab.getBooleanTopic("Module (" + m_moduleNumber + ") Encoder Health").publish();
-    moduleMotorHeadingPub =
-        moduleTab.getDoubleTopic("Module (" + m_moduleNumber + ") Motor Heading").publish();
-  }
+  private void initSmartDashboard() {}
 
-  private void updateSmartDashboard() {
-    moduleMotorHeadingPub.set(getHeadingDegrees());
-    moduleEncoderHealthPub.set(getInitSuccess());
-    moduleEncoderHeadingPub.set(m_angleEncoder.getAbsolutePosition().getValue() * 360);
-  }
+  private void updateSmartDashboard() {}
 
-  public void updateLog() {
-    moduleTurnCurrentEntry.append(m_turnMotor.getSupplyVoltage().getValue());
-    moduleDriveCurrentEntry.append(m_driveMotor.getSupplyVoltage().getValue());
-  }
+  public void updateLog() {}
 
   @Override
   public void periodic() {

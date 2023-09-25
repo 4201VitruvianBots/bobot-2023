@@ -8,6 +8,8 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.Pigeon2SimState;
+import com.ctre.phoenix6.unmanaged.Unmanaged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -69,6 +71,8 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       SWERVE_DRIVE.backRightCANCoderOffset)));
 
   private final Pigeon2 m_pigeon = new Pigeon2(CAN.pigeon, "rio");
+  private Pigeon2SimState m_pigeonSim;
+
   private double m_rollOffset;
 
   private boolean m_limitJoystickInput = false;
@@ -78,6 +82,10 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   private MechanismLigament2d m_swerveChassis2d;
 
   @SuppressWarnings("CanBeFinal")
+  private boolean m_simOverride = false; // DO NOT MAKE FINAL. WILL BREAK UNIT TESTS
+
+  private double m_simYaw;
+  private double m_simRoll;
   private DoublePublisher pitchPub, rollPub, yawPub, odometryXPub, odometryYPub, odometryYawPub;
 
   private boolean useHeadingTarget = false;
@@ -112,6 +120,8 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     if (RobotBase.isReal()) {
       Timer.delay(1);
       resetModulesToAbsolute();
+    } else {
+      m_pigeonSim = m_pigeon.getSimState();
     }
 
     initSmartDashboard();
@@ -365,9 +375,6 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     pitchPub.set(getPitchDegrees());
     rollPub.set(getRollDegrees() + getRollOffsetDegrees());
     yawPub.set(getHeadingDegrees());
-    odometryXPub.set(getOdometry().getEstimatedPosition().getX());
-    odometryYPub.set(getOdometry().getEstimatedPosition().getY());
-    odometryYawPub.set(getOdometry().getEstimatedPosition().getRotation().getDegrees());
   }
 
   @Override
@@ -381,7 +388,17 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    ChassisSpeeds chassisSpeed =
+        SWERVE_DRIVE.kSwerveKinematics.toChassisSpeeds(
+            ModuleMap.orderedValues(getModuleStates(), new SwerveModuleState[0]));
+
+    double dt = 0.01;
+    m_simYaw += chassisSpeed.omegaRadiansPerSecond * dt;
+
+    Unmanaged.feedEnable(20);
+    m_pigeonSim.setRawYaw(-Units.radiansToDegrees(m_simYaw));
+  }
 
   @Override
   public void close() throws Exception {
