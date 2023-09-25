@@ -172,3 +172,4 @@ out/
 *-window.json
 
 ctre_sim/
+*.wpilog

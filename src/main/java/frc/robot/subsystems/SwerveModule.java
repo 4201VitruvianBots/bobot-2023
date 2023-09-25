@@ -7,11 +7,16 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+import com.ctre.phoenix6.unmanaged.Unmanaged;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -19,7 +24,10 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SWERVE_DRIVE;
@@ -57,6 +65,29 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private BooleanPublisher moduleEncoderHealthPub;
   private PositionVoltage turnMotorVoltage = new PositionVoltage(0).withSlot(0);
 
+  private TalonFXSimState m_turnMotorSim;
+  private TalonFXSimState m_driveMotorSim;
+
+  private final FlywheelSim m_turnMotorModel =
+          new FlywheelSim(
+                  // Sim Values
+                  LinearSystemId.identifyVelocitySystem(0.25, 0.000001),
+                  SWERVE_MODULE.kTurnGearbox,
+                  SWERVE_MODULE.kTurningMotorGearRatio,
+                  VecBuilder.fill(0));
+
+  private final FlywheelSim m_driveMotorModel =
+          new FlywheelSim(
+                  // Sim Values
+                  LinearSystemId.identifyVelocitySystem(0.8, 0.6),
+                  SWERVE_MODULE.kDriveGearbox,
+                  SWERVE_MODULE.kDriveMotorGearRatio);
+
+  private double m_turnMotorSimDistance;
+  private double m_driveMotorSimDistance;
+  private double m_turnSimInput;
+  private double m_driveSimInput;
+
   public SwerveModule(
       SWERVE_MODULE_POSITION modulePosition,
       TalonFX turnMotor,
@@ -93,6 +124,11 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
     // To distinguish modules in CommandScheduler
     setName("SwerveModule_" + m_modulePosition.ordinal());
+
+    if (!RobotBase.isReal()) {
+      m_turnMotorSim = m_turnMotor.getSimState();
+      m_driveMotorSim = m_driveMotor.getSimState();
+    }
   }
 
   private void initModuleHeading() {
@@ -127,8 +163,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public void resetAngle(double angle) {
-    double newAngle =
-        (360.0 * m_angleEncoder.getAbsolutePosition().getValue()) - m_angleOffset + angle;
+    double newAngle = getHeadingDegrees() - m_angleOffset + angle;
     m_turnMotor.setRotorPosition(newAngle / 360.0);
   }
 
@@ -177,6 +212,11 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     // Jittering.
     m_turnMotor.setControl(turnMotorPositionControl.withPosition(angle / 360.0));
     m_lastAngle = angle;
+
+    if (!RobotBase.isReal()) {
+      //      m_turnSimInput = turnMotorPositionControl.withPosition(angle / 360.0);
+      m_driveSimInput = desiredState.speedMetersPerSecond / SWERVE_DRIVE.kMaxSpeedMetersPerSecond;
+    }
   }
 
   public SwerveModuleState getState() {
@@ -244,9 +284,33 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    m_turnMotorModel.setInputVoltage(MathUtil.clamp(m_turnSimInput * 12.0, -12, 12));
+    m_driveMotorModel.setInputVoltage(MathUtil.clamp(m_driveSimInput * 12.0, -12, 12));
+
+    double dt = 0.02;
+    m_turnMotorModel.update(dt);
+    m_driveMotorModel.update(dt);
+
+    m_turnMotorSimDistance += m_turnMotorModel.getAngularVelocityRadPerSec() * dt;
+    m_driveMotorSimDistance += m_driveMotorModel.getAngularVelocityRadPerSec() * dt;
+
+    Unmanaged.feedEnable(20);
+
+    m_turnMotorSim.setRawRotorPosition(m_turnMotorSimDistance);
+    m_driveMotorSim.setRawRotorPosition(m_driveMotorSimDistance);
+    m_turnMotorSim.setRotorVelocity(m_turnMotorModel.getAngularVelocityRPM() * 60.0);
+    m_driveMotorSim.setRotorVelocity(m_driveMotorModel.getAngularVelocityRPM() * 60.0);
+
+    m_turnMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+    m_driveMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+  }
 
   @SuppressWarnings("RedundantThrows")
   @Override
-  public void close() throws Exception {}
+  public void close() throws Exception {
+    m_driveMotor.close();
+    m_turnMotor.close();
+    m_angleEncoder.close();
+  }
 }

@@ -115,6 +115,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     }
 
     initSmartDashboard();
+    setNeutral();
   }
 
   private void resetModulesToAbsolute() {
