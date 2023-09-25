@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.CONSTANTS.kFalconSensorUnitsPerRotation;
-
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -96,10 +94,10 @@ public final class Constants {
         new SwerveDriveKinematics(
             ModuleMap.orderedValues(kModuleTranslations, new Translation2d[0]));
 
-    public static double frontLeftCANCoderOffset = 105.293;
-    public static double frontRightCANCoderOffset = 105.293;
-    public static double backLeftCANCoderOffset = 276.855;
-    public static double backRightCANCoderOffset = 171.475;
+    public static double frontLeftCANCoderOffset = 351.8262;
+    public static double frontRightCANCoderOffset = 196.17192;
+    public static double backLeftCANCoderOffset = 276.94332;
+    public static double backRightCANCoderOffset = 78.04692;
 
     public static double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
     public static final double kLimitedSpeedMetersPerSecond = kMaxSpeedMetersPerSecond / 5;
