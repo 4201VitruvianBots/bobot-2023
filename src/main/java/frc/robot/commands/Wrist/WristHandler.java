@@ -2,11 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Wrist;
+package frc.robot.commands.wrist;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.CONTROL_MODE;
-import frc.robot.Constants.SETPOINT;
+import frc.robot.constants.BASE.CONTROL_MODE;
+import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.subsystems.Wrist;
 
 public class WristHandler extends CommandBase {

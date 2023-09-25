@@ -10,12 +10,13 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.USB;
-import frc.robot.commands.Flywheel.RunFlywheel;
-import frc.robot.commands.Intake.RunIntake;
-import frc.robot.commands.Kicker.RunKicker;
-import frc.robot.commands.Wrist.WristHandler;
+import frc.robot.commands.flywheel.RunFlywheel;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.kicker.RunKicker;
 import frc.robot.commands.swerve.SetSwerveDrive;
+import frc.robot.commands.wrist.WristHandler;
+import frc.robot.constants.BASE;
+import frc.robot.constants.USB;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Wrist;
@@ -78,7 +79,7 @@ public class RobotContainer {
     xboxController.y().whileTrue(new RunFlywheel(m_intakeShooter));
     xboxController
         .leftBumper()
-        .whileTrue((new WristHandler(m_wrist, Constants.SETPOINT.INTAKING_LOW_CUBE)));
+        .whileTrue((new WristHandler(m_wrist, BASE.SETPOINT.INTAKING_LOW_CUBE)));
   }
 
   /**

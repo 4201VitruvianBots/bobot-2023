@@ -6,7 +6,7 @@ import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.constants.BASE;
 
 @SuppressWarnings("RedundantThrows")
 public class Controls extends SubsystemBase implements AutoCloseable {
@@ -58,7 +58,7 @@ public class Controls extends SubsystemBase implements AutoCloseable {
     allianceString = controlsTab.getStringTopic("alliance_string").publish();
     allianceBoolean = controlsTab.getBooleanTopic("Alliance").publish();
     try {
-      controlsTab.getStringTopic("Robot Name").publish().set(Constants.robotName);
+      controlsTab.getStringTopic("Robot Name").publish().set(BASE.robotName);
     } catch (Exception m_ignored) {
 
     }

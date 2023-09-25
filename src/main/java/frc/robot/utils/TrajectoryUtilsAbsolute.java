@@ -10,7 +10,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import frc.robot.Constants.SWERVE_DRIVE;
+import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.simulation.SimConstants;
 import frc.robot.subsystems.SwerveDrive;
 import java.io.File;
@@ -83,7 +83,7 @@ public class TrajectoryUtilsAbsolute {
           new PPSwerveControllerCommand(
               trajectory,
               swerveDrive::getPoseMeters,
-              SWERVE_DRIVE.kSwerveKinematics,
+              DRIVE.kSwerveKinematics,
               swerveDrive.getXPidController(),
               swerveDrive.getYPidController(),
               swerveDrive.getThetaPidController(),

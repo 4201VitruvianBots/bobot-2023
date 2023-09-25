@@ -6,7 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.simulation.SimHooks;
-import frc.robot.Constants;
+import frc.robot.constants.SWERVE.MODULE;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -43,13 +43,13 @@ public class TestCtreUtils implements AutoCloseable {
     var testMotorSim = m_testMotor.getSimState();
 
     var testConfig = CtreUtils.generateTurnMotorConfig();
-    testConfig.Feedback.SensorToMechanismRatio = Constants.SWERVE_MODULE.kTurningMotorGearRatio;
+    testConfig.Feedback.SensorToMechanismRatio = MODULE.kTurningMotorGearRatio;
     m_testMotor.getConfigurator().apply(testConfig);
 
     testMotorSim.setRawRotorPosition(-1);
     m_testMotor.getPosition().waitForUpdate(WAIT_TIME);
 
-    var expectedRotation = 1.0 / Constants.SWERVE_MODULE.kTurningMotorGearRatio;
+    var expectedRotation = 1.0 / MODULE.kTurningMotorGearRatio;
     var testPosition = m_testMotor.getPosition().getValue();
 
     assertEquals(expectedRotation, testPosition, DELTA);
@@ -57,7 +57,7 @@ public class TestCtreUtils implements AutoCloseable {
     testMotorSim.setRawRotorPosition(1);
     m_testMotor.getPosition().waitForUpdate(WAIT_TIME);
 
-    expectedRotation = -1.0 / Constants.SWERVE_MODULE.kTurningMotorGearRatio;
+    expectedRotation = -1.0 / MODULE.kTurningMotorGearRatio;
     testPosition = m_testMotor.getPosition().getValue();
 
     assertEquals(expectedRotation, testPosition, DELTA);

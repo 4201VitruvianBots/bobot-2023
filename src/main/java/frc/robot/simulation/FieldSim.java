@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.VISION.CAMERA_SERVER;
+import frc.robot.constants.VISION.CAMERA_SERVER;
 import frc.robot.subsystems.*;
 import frc.robot.utils.ChargedUpNodeMask;
 import frc.robot.utils.ModuleMap;
@@ -140,28 +140,15 @@ public class FieldSim extends SubsystemBase implements AutoCloseable {
 
     if (RobotBase.isSimulation()) {
       m_field2d
-          .getObject("lLocalizerTagPoses")
-          .setPoses(m_vision.getTagPoses2d(CAMERA_SERVER.LEFT_LOCALIZER));
+          .getObject("localizerTagPoses")
+          .setPoses(m_vision.getTagPoses2d(CAMERA_SERVER.LIMELIGHT));
       m_field2d
-          .getObject("lLocalizerPoses")
-          .setPoses(m_vision.getRobotPoses2d(CAMERA_SERVER.LEFT_LOCALIZER));
+          .getObject("localizerPoses")
+          .setPoses(m_vision.getRobotPoses2d(CAMERA_SERVER.LIMELIGHT));
       m_field2d
-          .getObject("lLocalizerPose")
-          .setPose(m_vision.getRobotPose2d(CAMERA_SERVER.LEFT_LOCALIZER));
-      m_field2d
-          .getObject("rLocalizerTagPoses")
-          .setPoses(m_vision.getTagPoses2d(CAMERA_SERVER.RIGHT_LOCALIZER));
-      m_field2d
-          .getObject("rLocalizerPoses")
-          .setPoses(m_vision.getRobotPoses2d(CAMERA_SERVER.RIGHT_LOCALIZER));
-      m_field2d
-          .getObject("rLocalizerPose")
-          .setPose(m_vision.getRobotPose2d(CAMERA_SERVER.RIGHT_LOCALIZER));
+          .getObject("localizerPose")
+          .setPose(m_vision.getRobotPose2d(CAMERA_SERVER.LIMELIGHT));
     }
-
-    m_field2d
-        .getObject("fLocalizerPose")
-        .setPose(m_vision.getRobotPose2d(CAMERA_SERVER.FUSED_LOCALIZER));
 
     intakePose =
         m_swerveDrive

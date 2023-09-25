@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -10,7 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.simulation.SimHooks;
-import frc.robot.Constants;
+import frc.robot.constants.CAN;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -29,10 +30,10 @@ public class TestSwerveModule implements AutoCloseable {
     /* create the TalonFX */
     m_testModule =
         new SwerveModule(
-            Constants.SWERVE_DRIVE.SWERVE_MODULE_POSITION.FRONT_LEFT,
-            new TalonFX(Constants.CAN.frontLeftTurnMotor),
-            new TalonFX(Constants.CAN.frontLeftDriveMotor),
-            new CANcoder(Constants.CAN.frontLeftCanCoder),
+            MODULE_POSITION.FRONT_LEFT,
+            new TalonFX(CAN.frontLeftTurnMotor),
+            new TalonFX(CAN.frontLeftDriveMotor),
+            new CANcoder(CAN.frontLeftCanCoder),
             0.0);
 
     /* enable the robot */
