@@ -11,10 +11,10 @@ public final class CtreUtils {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
     motorConfig.Slot0.kV = 0.0;
-    motorConfig.Slot0.kP = 0.6; // 0.8;
-    motorConfig.Slot0.kI = 0.0001;
+    motorConfig.Slot0.kP = 5.0; // 0.8;
+    motorConfig.Slot0.kI = 0.0000;
     //    motorConfig.Slot0.integralZone = 121.904762;
-    motorConfig.Slot0.kD = 12; // 0.0;
+    motorConfig.Slot0.kD = 0.000; // 0.0;
     //    motorConfig.Slot0.allowableClosedloopError = 0.0;
     motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
@@ -33,8 +33,8 @@ public final class CtreUtils {
   public static TalonFXConfiguration generateDriveMotorConfig() {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
-    motorConfig.Slot0.kV = 0.0;
-    motorConfig.Slot0.kP = 0.1;
+    motorConfig.Slot0.kV = 0.1185;
+    motorConfig.Slot0.kP = 0.24;
     motorConfig.Slot0.kI = 0.0;
     motorConfig.Slot0.kD = 0.0;
 
