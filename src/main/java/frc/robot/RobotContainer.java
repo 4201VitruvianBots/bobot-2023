@@ -46,7 +46,6 @@ public class RobotContainer {
     initializeSubsystems();
     // Configure the trigger bindings
     configureBindings();
-    initializeSubsystems();
   }
 
   public void initializeSubsystems() {
