@@ -1,8 +1,5 @@
 package frc.robot.constants;
 
-import static frc.robot.constants.BASE.CONSTANTS.kCANCoderSensorUnitsPerRotation;
-import static frc.robot.constants.BASE.CONSTANTS.kFalconSensorUnitsPerRotation;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;

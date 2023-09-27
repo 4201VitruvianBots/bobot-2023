@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.constants.SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
 import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -100,7 +101,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   private double m_rotationOutput;
 
   ChassisSpeeds chassisSpeeds;
-  private final double m_maxVelocity = DRIVE.kMaxSpeedMetersPerSecond;
+  private final double m_maxVelocity = kMaxSpeedMetersPerSecond;
   private final double m_limitedVelocity = DRIVE.kLimitedSpeedMetersPerSecond;
   private double m_currentMaxVelocity = m_maxVelocity;
 

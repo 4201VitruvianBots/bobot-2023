@@ -2,7 +2,59 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/SwerveDrive": "Subsystem"
+      "/LiveWindow/SwerveModule/SwerveModule_0": "Subsystem",
+      "/LiveWindow/SwerveModule/SwerveModule_1": "Subsystem",
+      "/LiveWindow/SwerveModule/SwerveModule_2": "Subsystem",
+      "/LiveWindow/SwerveModule/SwerveModule_3": "Subsystem",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/Pigeon 2 (Pro) [9]": "Gyro",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [20]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [21]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [22]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [23]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [24]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [25]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [26]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [27]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [30]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [31]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX (Pro) [32]": "Motor Controller",
+      "/SmartDashboard/Field2d": "Field2d",
+      "/SmartDashboard/SwerveDrive": "Subsystem",
+      "/SmartDashboard/SwerveModule2D_0": "Mechanism2d",
+      "/SmartDashboard/SwerveModule2D_1": "Mechanism2d",
+      "/SmartDashboard/SwerveModule2D_2": "Mechanism2d",
+      "/SmartDashboard/SwerveModule2D_3": "Mechanism2d"
+    },
+    "windows": {
+      "/SmartDashboard/Field2d": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/SwerveModule2D_0": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/SwerveModule2D_1": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/SwerveModule2D_2": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/SwerveModule2D_3": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   }
 }

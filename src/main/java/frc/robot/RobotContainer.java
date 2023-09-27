@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -51,12 +52,21 @@ public class RobotContainer {
   }
 
   public void initializeSubsystems() {
-    m_swerveDrive.setDefaultCommand(
-        new SetSwerveDrive(
-            m_swerveDrive,
-            () -> leftJoystick.getRawAxis(1),
-            () -> leftJoystick.getRawAxis(0),
-            () -> rightJoystick.getRawAxis(0)));
+    if (RobotBase.isReal()) {
+      m_swerveDrive.setDefaultCommand(
+          new SetSwerveDrive(
+              m_swerveDrive,
+              () -> leftJoystick.getRawAxis(1),
+              () -> leftJoystick.getRawAxis(0),
+              () -> rightJoystick.getRawAxis(0)));
+    } else {
+      m_swerveDrive.setDefaultCommand(
+          new SetSwerveDrive(
+              m_swerveDrive,
+              () -> -leftJoystick.getRawAxis(1),
+              () -> -leftJoystick.getRawAxis(0),
+              () -> -leftJoystick.getRawAxis(2)));
+    }
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
