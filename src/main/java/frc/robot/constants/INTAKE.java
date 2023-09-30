@@ -17,6 +17,6 @@ public final class INTAKE {
   public static final double kMotorDistancePerPulse =
       360.0 / (kFalconSensorUnitsPerRotation * gearRatio);
 
-  public static double kF = 0;
+  public static double kV = 0;
   public static double kP = 0.2;
 }
