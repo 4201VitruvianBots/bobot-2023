@@ -76,7 +76,7 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     xboxController.leftTrigger().whileTrue(new RunIntake(m_intakeShooter));
-    xboxController.rightTrigger().whileTrue(new RunKicker(m_intakeShooter));
+    xboxController.rightTrigger().whileTrue(new RunFlywheel(m_intakeShooter));
     xboxController.y().whileTrue(new RunFlywheel(m_intakeShooter));
     xboxController
         .leftBumper()
