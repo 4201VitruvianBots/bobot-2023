@@ -160,12 +160,12 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public void resetAngle(double angle) {
-    //    double newAngle = getHeadingDegrees() - m_angleOffset + angle;
-    m_turnMotor.setPosition(angle / 360.0);
+      //  double newAngle = getHeadingDegrees() - m_angleOffset + angle;
+    m_turnMotor.setPosition(m_angleEncoder.getAbsolutePosition().getValue());
   }
 
   public double getHeadingDegrees() {
-    return 360 * m_turnMotor.getVelocity().getValue();
+    return 360 * m_turnMotor.getPosition().getValue();
   }
 
   public Rotation2d getHeadingRotation2d() {
@@ -245,7 +245,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     Logger.getInstance()
         .recordOutput(
             "Swerve/Module[" + m_moduleNumber + "] Encoder Heading",
-            m_angleEncoder.getAbsolutePosition().getValue());
+            m_angleEncoder.getAbsolutePosition().getValue() * 360.0);
     Logger.getInstance()
         .recordOutput("Swerve/Module[" + m_moduleNumber + "] Angle Offset", m_angleOffset);
     Logger.getInstance()
