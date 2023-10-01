@@ -93,6 +93,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     m_angleEncoder = angleEncoder;
 
     var turnMotorConfig = CtreUtils.generateTurnMotorConfig();
+    turnMotorConfig.Feedback.SensorToMechanismRatio = SWERVE.MODULE.kTurningMotorGearRatio;
     configureTalonFx(m_turnMotor, turnMotorConfig);
 
     var driveMotorConfig = CtreUtils.generateDriveMotorConfig();
@@ -135,7 +136,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
   private void initModuleHeading() {
     var encoderConfig = CtreUtils.generateCanCoderConfig();
-    encoderConfig.MagnetSensor.MagnetOffset = m_angleOffset;
+    encoderConfig.MagnetSensor.MagnetOffset = m_angleOffset / 360.0;
     configureCANCoder(m_angleEncoder, encoderConfig);
     resetAngleToAbsolute();
 
@@ -164,7 +165,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public double getHeadingDegrees() {
-    return 360 * m_turnMotor.getRotorPosition().getValue();
+    return 360 * m_turnMotor.getVelocity().getValue();
   }
 
   public Rotation2d getHeadingRotation2d() {
@@ -172,11 +173,11 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public double getVelocityMetersPerSecond() {
-    return m_driveMotor.getRotorVelocity().getValue() * MODULE.kWheelDiameterMeters * Math.PI;
+    return m_driveMotor.getVelocity().getValue() * MODULE.kWheelDiameterMeters * Math.PI;
   }
 
   public double getDriveMeters() {
-    return m_driveMotor.getRotorPosition().getValue() * MODULE.kWheelDiameterMeters * Math.PI;
+    return m_driveMotor.getPosition().getValue() * MODULE.kWheelDiameterMeters * Math.PI;
   }
 
   public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
