@@ -24,7 +24,7 @@ public class RunIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intakeShooter.setIntakePercentOutput(0.5);
+    m_intakeShooter.setKickerPercentOutput(0.5);
     m_intakeShooter.setFlywheelPercentOutput(0.5);
   }
 
@@ -32,7 +32,7 @@ public class RunIntake extends CommandBase {
   @Override
   public void end(boolean interrupted) {
 
-    m_intakeShooter.setIntakePercentOutput(0);
+    m_intakeShooter.setKickerPercentOutput(0);
     m_intakeShooter.setFlywheelPercentOutput(0);
   }
 
