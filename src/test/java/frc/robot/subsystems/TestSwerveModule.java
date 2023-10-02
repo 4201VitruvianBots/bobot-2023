@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestSwerveModule implements AutoCloseable {
   static final double DELTA = 1e-3; // acceptable deviation range
-  static final double WAIT_TIME = 0.2;
+  static final double WAIT_TIME = 0.02;
 
   SwerveModule m_testModule;
 

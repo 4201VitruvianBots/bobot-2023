@@ -17,8 +17,8 @@ public final class CtreUtils {
 
     motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     motorConfig.Slot0.kV = 0.0;
-    motorConfig.Slot0.kP = 5.0; // 0.8;
-    motorConfig.Slot0.kI = 0.0000;
+    motorConfig.Slot0.kP = 80;
+        motorConfig.Slot0.kI = 0.0000;
     //    motorConfig.Slot0.integralZone = 121.904762;
     motorConfig.Slot0.kD = 0.000; // 0.0;
     //    motorConfig.Slot0.allowableClosedloopError = 0.0;
@@ -32,7 +32,7 @@ public final class CtreUtils {
     motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     return motorConfig;
   }
