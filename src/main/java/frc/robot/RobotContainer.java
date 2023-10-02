@@ -12,11 +12,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.flywheel.RunFlywheel;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.kicker.RunKicker;
-import frc.robot.commands.kicker.RunKickerFast;
+import frc.robot.commands.kicker.RunKickerIn;
+import frc.robot.commands.kicker.RunKickerOut;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.wrist.WristHandler;
 import frc.robot.constants.BASE;
+import frc.robot.constants.INTAKE;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.IntakeShooter;
@@ -77,9 +78,14 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     xboxController.leftTrigger().whileTrue(new RunIntake(m_intakeShooter));
-    xboxController.rightTrigger().whileTrue(new RunKicker(m_intakeShooter));
-    xboxController.y().whileTrue(new RunFlywheel(m_intakeShooter));
-    xboxController.x().whileTrue(new RunKickerFast(m_intakeShooter));
+    
+    xboxController.x().whileTrue(new RunKickerOut(m_intakeShooter));
+
+    xboxController.rightTrigger().whileTrue(new RunKickerIn(m_intakeShooter));
+
+    xboxController.y().whileTrue(new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.HIGH));
+    xboxController.b().whileTrue(new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.MEDIUM));
+    xboxController.a().whileTrue(new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.LOW));
 
     xboxController
         .leftBumper()

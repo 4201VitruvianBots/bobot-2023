@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
@@ -8,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
+import frc.robot.constants.INTAKE;
 
 public class IntakeShooter extends SubsystemBase {
 
@@ -23,6 +28,9 @@ public class IntakeShooter extends SubsystemBase {
       motor.restoreFactoryDefaults();
     }
 
+    flywheelMotor.getPIDController().setP(INTAKE.kP);
+    
+    // Shuffleboard setup
     NetworkTable intakeNtTab = NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("IntakeShooter");
 
     kickerOutputPub = intakeNtTab.getDoubleTopic("Kicker Output").publish();
