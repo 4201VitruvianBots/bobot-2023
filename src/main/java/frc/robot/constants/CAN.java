@@ -19,4 +19,5 @@ public final class CAN {
 
   public static final int kickerMotor = 30;
   public static final int flywheelMotor = 31;
+  public static final int wristMotor = 32;
 }

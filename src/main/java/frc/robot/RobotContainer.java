@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.flywheel.RunFlywheel;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.kicker.RunKicker;
+import frc.robot.commands.kicker.RunKickerFast;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.wrist.WristHandler;
 import frc.robot.constants.BASE;
@@ -76,8 +77,10 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     xboxController.leftTrigger().whileTrue(new RunIntake(m_intakeShooter));
-    xboxController.rightTrigger().whileTrue(new RunFlywheel(m_intakeShooter));
+    xboxController.rightTrigger().whileTrue(new RunKicker(m_intakeShooter));
     xboxController.y().whileTrue(new RunFlywheel(m_intakeShooter));
+    xboxController.x().whileTrue(new RunKickerFast(m_intakeShooter));
+
     xboxController
         .leftBumper()
         .whileTrue((new WristHandler(m_wrist, BASE.SETPOINT.INTAKING_LOW_CUBE)));

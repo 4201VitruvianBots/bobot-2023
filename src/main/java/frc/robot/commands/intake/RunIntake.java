@@ -25,7 +25,7 @@ public class RunIntake extends CommandBase {
   @Override
   public void execute() {
     m_intakeShooter.setKickerPercentOutput(0.5);
-    m_intakeShooter.setFlywheelPercentOutput(0.5);
+    m_intakeShooter.setFlywheelPercentOutput(0.25);
   }
 
   // Called once the command ends or is interrupted.

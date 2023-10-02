@@ -13,8 +13,6 @@ public class RunKicker extends CommandBase {
   /** Creates a new RunIntake. */
   public RunKicker(IntakeShooter intakeShooter) {
     m_intakeShooter = intakeShooter;
-
-    addRequirements(m_intakeShooter);
   }
 
   // Called when the command is initially scheduled.
@@ -24,7 +22,7 @@ public class RunKicker extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intakeShooter.setKickerPercentOutput(-0.5);
+    m_intakeShooter.setKickerPercentOutput(0.5);
   }
 
   // Called once the command ends or is interrupted.
