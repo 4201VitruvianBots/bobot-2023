@@ -18,7 +18,7 @@ public final class CtreUtils {
     motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     motorConfig.Slot0.kV = 0.0;
     motorConfig.Slot0.kP = 40;
-        motorConfig.Slot0.kI = 0.0000;
+    motorConfig.Slot0.kI = 0.0000;
     //    motorConfig.Slot0.integralZone = 121.904762;
     motorConfig.Slot0.kD = 0.000; // 0.0;
     //    motorConfig.Slot0.allowableClosedloopError = 0.0;

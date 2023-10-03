@@ -4,11 +4,9 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.utils.CtreUtils.configureCANCoder;
 import static frc.robot.utils.CtreUtils.configureTalonFx;
 import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
-import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -120,17 +118,16 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     initModuleHeading();
 
     moduleRoot =
-            moduleVisualizer.getRoot(
-                    "ModuleCenter_" + m_modulePosition.ordinal(),
-                    Units.inchesToMeters(3),
-                    Units.inchesToMeters(3));
+        moduleVisualizer.getRoot(
+            "ModuleCenter_" + m_modulePosition.ordinal(),
+            Units.inchesToMeters(3),
+            Units.inchesToMeters(3));
     moduleLigament =
-            moduleRoot.append(
-                    new MechanismLigament2d(
-                            "ModuleDirection_" + m_modulePosition.ordinal(),
-                            (getVelocityMetersPerSecond() / SWERVE.DRIVE.kMaxSpeedMetersPerSecond) * .75
-                                    + .25,
-                            getHeadingDegrees()));
+        moduleRoot.append(
+            new MechanismLigament2d(
+                "ModuleDirection_" + m_modulePosition.ordinal(),
+                (getVelocityMetersPerSecond() / SWERVE.DRIVE.kMaxSpeedMetersPerSecond) * .75 + .25,
+                getHeadingDegrees()));
 
     SmartDashboard.putData("SwerveModule2D_" + m_modulePosition.ordinal(), moduleVisualizer);
   }
@@ -146,7 +143,10 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     if (RobotBase.isReal()) {
       Timer.delay(0.1);
       m_initSuccess =
-          Math.abs(getHeadingDegrees() + m_angleOffset - m_angleEncoder.getAbsolutePosition().getValue())
+          Math.abs(
+                  getHeadingDegrees()
+                      + m_angleOffset
+                      - m_angleEncoder.getAbsolutePosition().getValue())
               < 1.0;
     } else m_initSuccess = true;
   }
@@ -164,7 +164,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public void resetAngle(double angle) {
-      //  double newAngle = getHeadingDegrees() - m_angleOffset + angle;
+    //  double newAngle = getHeadingDegrees() - m_angleOffset + angle;
     m_turnMotor.setPosition(m_angleEncoder.getAbsolutePosition().getValue());
   }
 
@@ -262,7 +262,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     updateLog();
 
     moduleLigament.setLength(
-            ((getVelocityMetersPerSecond() / SWERVE.DRIVE.kMaxSpeedMetersPerSecond) * .75) + .25);
+        ((getVelocityMetersPerSecond() / SWERVE.DRIVE.kMaxSpeedMetersPerSecond) * .75) + .25);
     moduleLigament.setAngle(getHeadingDegrees());
   }
 
