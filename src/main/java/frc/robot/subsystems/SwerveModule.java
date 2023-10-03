@@ -8,6 +8,7 @@ import static frc.robot.utils.CtreUtils.configureCANCoder;
 import static frc.robot.utils.CtreUtils.configureTalonFx;
 import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
+import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -135,15 +136,18 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   private void initModuleHeading() {
-    var encoderConfig = CtreUtils.generateCanCoderConfig();
-    encoderConfig.MagnetSensor.MagnetOffset = m_angleOffset / 360.0;
-    configureCANCoder(m_angleEncoder, encoderConfig);
+    if (RobotBase.isReal()) Timer.delay(0.2);
+    m_angleEncoder.getConfigurator();
+    m_angleEncoder.optimizeBusUtilization(255);
+    m_angleEncoder.optimizeBusUtilization(255);
     resetAngleToAbsolute();
 
     // Check if the offset was applied properly. Delay to give it some time to set
     if (RobotBase.isReal()) {
       Timer.delay(0.1);
-      m_initSuccess = m_angleEncoder.getAbsolutePosition().getValue() < 1.0;
+      m_initSuccess =
+          Math.abs(getHeadingDegrees() + m_angleOffset - m_angleEncoder.getAbsolutePosition().getValue())
+              < 1.0;
     } else m_initSuccess = true;
   }
 
