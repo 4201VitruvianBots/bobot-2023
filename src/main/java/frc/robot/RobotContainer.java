@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -15,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.auto.CenterTwoBalance;
+import frc.robot.commands.auto.autopaths.CenterTwoBalance;
 import frc.robot.commands.flywheel.RunFlywheel;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.kicker.RunKickerIn;
@@ -108,13 +107,16 @@ public class RobotContainer {
         .leftBumper()
         .whileTrue((new WristHandler(m_wrist, BASE.SETPOINT.INTAKING_LOW_CUBE)));
   }
+
   public void disableInit() {
     m_swerveDrive.setNeutral(NeutralMode.Coast);
   }
+
   public void teleopInit() {
     m_swerveDrive.setNeutral(NeutralMode.Brake);
   }
-  public void autonomousInit(){
+
+  public void autonomousInit() {
     m_swerveDrive.setNeutral(NeutralMode.Brake);
   }
   /**
@@ -125,25 +127,19 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return m_autoChooser.getSelected();
-   
   }
 
-  public void initializeAutoChooser(){
+  public void initializeAutoChooser() {
     m_autoChooser.addOption(
-      "CenterOneBalance",
-      new CenterTwoBalance(
-          "CenterOneBalance",
-          m_swerveDrive,
-          m_fieldSim,
-          m_wrist));
+        "CenterOneBalance",
+        new CenterTwoBalance(
+            "CenterOneBalance", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
 
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
-
     SmartDashboard.putData("Auto Selector", m_autoChooser);
-
   }
- 
+
   public void periodic() {
     m_fieldSim.periodic();
   }

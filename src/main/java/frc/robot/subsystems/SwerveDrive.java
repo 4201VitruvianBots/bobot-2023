@@ -209,7 +209,6 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     setSwerveModuleStates(states, false);
   }
 
-
   public void setOdometry(Pose2d pose) {
     if (RobotBase.isSimulation()) {
       // m_pigeon.getSimState().setRawYaw(pose.getRotation().getDegrees());
@@ -228,6 +227,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   public void setRollOffset() {
     m_rollOffset = -m_pigeon.getRoll(); // -2.63
   }
+
   public void setPitchOffset() {
     m_pitchOffset = -m_pigeon.getPitch(); // -2.63
   }
@@ -235,6 +235,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   public double getRollOffsetDegrees() {
     return m_rollOffset;
   }
+
   public double getPitchOffsetDegrees() {
     return m_pitchOffset;
   }
