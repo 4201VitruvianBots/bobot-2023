@@ -21,6 +21,7 @@ public class BASE {
     STOWED(Units.degreesToRadians(98.0)),
     INTAKING_LOW_CUBE(Units.degreesToRadians(-13.5)),
     SCORE_LOW_REVERSE(Units.degreesToRadians(-14.0)),
+    SCORE_MID_CUBE(Units.degreesToRadians(127.0)), // Temporary value
     SCORE_HIGH_CUBE(Units.degreesToRadians(147.0)),
     INTAKING_EXTENDED_CUBE(SCORE_HIGH_CUBE.get());
 

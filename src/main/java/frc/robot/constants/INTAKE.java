@@ -42,4 +42,15 @@ public final class INTAKE {
       return this.speed;
     }
   }
+  }
+
+  public static final double kWristMaxAccel = 0.0;
+  public static final double kWristMaxVel = 0.0;
+
+  public static final double kWristP = 0.0;
+  public static final double kWristI = 0.0;
+  public static final double kWristD = 0.0;
+
+  public static final double kWristRadiansToEncoderUnits = 0.0;
+  
 }

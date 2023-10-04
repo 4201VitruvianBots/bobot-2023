@@ -9,11 +9,11 @@ import frc.robot.constants.BASE.CONTROL_MODE;
 import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.subsystems.Wrist;
 
-public class WristHandler extends CommandBase {
+public class SetWristSetpoint extends CommandBase {
   private Wrist m_Wrist;
   private SETPOINT m_desiredState;
 
-  public WristHandler(Wrist wrist, SETPOINT desiredState) {
+  public SetWristSetpoint(Wrist wrist, SETPOINT desiredState) {
     m_Wrist = wrist;
     m_desiredState = desiredState;
 

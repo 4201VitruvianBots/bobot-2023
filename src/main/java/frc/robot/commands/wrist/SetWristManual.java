@@ -5,25 +5,33 @@
 package frc.robot.commands.wrist;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.BASE.CONTROL_MODE;
 import frc.robot.subsystems.Wrist;
 
-public class SetWrist extends CommandBase {
-  /** Creates a new SetWrist. */
+public class SetWristManual extends CommandBase {
+  /** Creates a new SetWristManual. */
   Wrist m_wrist;
+  double m_output;
 
-  public SetWrist(Wrist wrist) {
+  public SetWristManual(Wrist wrist, double output) {
     m_wrist = wrist;
+    m_output = output;
 
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_wrist.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
+    m_wrist.setUserSetpoint(false);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_wrist.set
+  }
 
   // Called once the command ends or is interrupted.
   @Override
