@@ -12,6 +12,7 @@ public final class SWERVE {
 
   public static final class DRIVE {
     public static final double kTrackWidth = Units.inchesToMeters(24);
+
     public static final double kWheelBase = Units.inchesToMeters(24);
 
     public static final Map<MODULE_POSITION, Translation2d> kModuleTranslations =
@@ -29,8 +30,8 @@ public final class SWERVE {
         new SwerveDriveKinematics(
             ModuleMap.orderedValues(kModuleTranslations, new Translation2d[0]));
 
-    public static double frontLeftCANCoderOffset = 81.65052;
-    public static double frontRightCANCoderOffset = 106.43544;
+    public static double frontLeftCANCoderOffset = 197.314;
+    public static double frontRightCANCoderOffset = 80.947;
     public static double backLeftCANCoderOffset = 185.00976;
     public static double backRightCANCoderOffset = 172.52928;
 
@@ -59,6 +60,12 @@ public final class SWERVE {
 
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(1);
     public static final DCMotor kTurnGearbox = DCMotor.getFalcon500(1);
+    public static final double kDriveMotorDistancePerPulse =
+        (kWheelDiameterMeters * Math.PI) / (2048 * kDriveMotorGearRatio);
+
+    public static final double kTurningMotorDistancePerPulse =
+        360.0 / (2048 * kTurningMotorGearRatio);
+    public static final double kTurnEncoderDistancePerPulse = 360.0 / 4096;
 
     public static final double ksDriveVoltSecondsPerMeter = 0.605 / 12;
     public static final double kvDriveVoltSecondsSquaredPerMeter = 1.72 / 12;
