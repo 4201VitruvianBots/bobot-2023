@@ -30,10 +30,10 @@ public final class SWERVE {
         new SwerveDriveKinematics(
             ModuleMap.orderedValues(kModuleTranslations, new Translation2d[0]));
 
-    public static double frontLeftCANCoderOffset = 197.314;
-    public static double frontRightCANCoderOffset = 80.947;
-    public static double backLeftCANCoderOffset = 185.00976;
-    public static double backRightCANCoderOffset = 172.52928;
+    public static double frontLeftCANCoderOffset = 275.889;
+    public static double frontRightCANCoderOffset = 173.408;
+    public static double backLeftCANCoderOffset = 261.475;
+    public static double backRightCANCoderOffset = 197.314;
 
     public static double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
     public static final double kLimitedSpeedMetersPerSecond = kMaxSpeedMetersPerSecond / 5;

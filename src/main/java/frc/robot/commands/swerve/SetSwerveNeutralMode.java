@@ -1,5 +1,7 @@
 package frc.robot.commands.swerve;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -7,15 +9,17 @@ import frc.robot.subsystems.SwerveDrive;
 public class SetSwerveNeutralMode extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final SwerveDrive m_swerveDrive;
+  private final NeutralMode m_mode;
 
   /**
    * Sets the drivetrain neutral mode (coast/brake).
    *
    * @param swerveDrive The driveTrain used by this command.
+  * @param mode {@link NeutralMode}: COAST, BRAKE, or HALF_BRAKE.
    */
-  public SetSwerveNeutralMode(SwerveDrive swerveDrive) {
+  public SetSwerveNeutralMode(SwerveDrive swerveDrive, NeutralMode mode) {
     m_swerveDrive = swerveDrive;
-
+    m_mode = mode;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_swerveDrive);
   }
@@ -28,7 +32,7 @@ public class SetSwerveNeutralMode extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_swerveDrive.setNeutral();
+    m_swerveDrive.setNeutral(m_mode);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

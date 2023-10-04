@@ -57,7 +57,7 @@ public class AutoBalance extends CommandBase {
     // Negative & 90 degrees for Facing Bump Side
     m_output =
         -outputCalculator.calculate(
-            m_swerveDrive.getRollDegrees() + m_swerveDrive.getRollOffsetDegrees());
+            m_swerveDrive.getPitchDegrees() + m_swerveDrive.getPitchOffsetDegrees());
 
     states =
         new SwerveModuleState[] {
@@ -70,7 +70,7 @@ public class AutoBalance extends CommandBase {
     m_swerveDrive.setSwerveModuleStates(states, false);
 
     double balanceDeltaDegrees =
-        Math.abs(m_swerveDrive.getRollDegrees() + m_swerveDrive.getRollOffsetDegrees());
+        Math.abs(m_swerveDrive.getPitchDegrees() + m_swerveDrive.getPitchOffsetDegrees());
     if (balanceDeltaDegrees < kAutoBalanceAngleThresholdDegrees && !timerStart) {
       m_timer.reset();
       m_timer.start();

@@ -75,6 +75,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   private final Pigeon2 m_pigeon = new Pigeon2(CAN.pigeon, "rio");
 
   private double m_rollOffset;
+  private double m_pitchOffset;
 
   private boolean m_limitJoystickInput = false;
 
@@ -122,7 +123,6 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     }
 
     initSmartDashboard();
-    setNeutral();
   }
 
   private void resetModulesToAbsolute() {
@@ -209,6 +209,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     setSwerveModuleStates(states, false);
   }
 
+
   public void setOdometry(Pose2d pose) {
     if (RobotBase.isSimulation()) {
       // m_pigeon.getSimState().setRawYaw(pose.getRotation().getDegrees());
@@ -227,9 +228,15 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   public void setRollOffset() {
     m_rollOffset = -m_pigeon.getRoll(); // -2.63
   }
+  public void setPitchOffset() {
+    m_pitchOffset = -m_pigeon.getPitch(); // -2.63
+  }
 
   public double getRollOffsetDegrees() {
     return m_rollOffset;
+  }
+  public double getPitchOffsetDegrees() {
+    return m_pitchOffset;
   }
 
   public double getPitchDegrees() {
@@ -310,9 +317,9 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     return m_turnController;
   }
 
-  public void setNeutral() {
+  public void setNeutral(NeutralMode mode) {
     for (SwerveModule module : m_swerveModules.values()) {
-      module.setTurnNeutralMode(NeutralMode.Coast);
+      module.setTurnNeutralMode(mode);
     }
   }
 

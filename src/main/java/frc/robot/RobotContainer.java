@@ -4,13 +4,18 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.auto.CenterTwoBalance;
 import frc.robot.commands.flywheel.RunFlywheel;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.kicker.RunKickerIn;
@@ -37,7 +42,7 @@ public class RobotContainer {
   private final Wrist m_wrist = new Wrist();
   private final IntakeShooter m_intakeShooter = new IntakeShooter();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
-
+  private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
   private final Joystick rightJoystick = new Joystick(USB.rightJoystick);
   private final CommandXboxController xboxController =
@@ -51,6 +56,8 @@ public class RobotContainer {
     initializeSubsystems();
     // Configure the trigger bindings
     configureBindings();
+
+    initializeAutoChooser();
   }
 
   public void initializeSubsystems() {
@@ -101,7 +108,15 @@ public class RobotContainer {
         .leftBumper()
         .whileTrue((new WristHandler(m_wrist, BASE.SETPOINT.INTAKING_LOW_CUBE)));
   }
-
+  public void disableInit() {
+    m_swerveDrive.setNeutral(NeutralMode.Coast);
+  }
+  public void teleopInit() {
+    m_swerveDrive.setNeutral(NeutralMode.Brake);
+  }
+  public void autonomousInit(){
+    m_swerveDrive.setNeutral(NeutralMode.Brake);
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -109,9 +124,26 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return new WaitCommand(0);
+    return m_autoChooser.getSelected();
+   
   }
 
+  public void initializeAutoChooser(){
+    m_autoChooser.addOption(
+      "CenterOneBalance",
+      new CenterTwoBalance(
+          "CenterOneBalance",
+          m_swerveDrive,
+          m_fieldSim,
+          m_wrist));
+
+    m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
+
+
+    SmartDashboard.putData("Auto Selector", m_autoChooser);
+
+  }
+ 
   public void periodic() {
     m_fieldSim.periodic();
   }
