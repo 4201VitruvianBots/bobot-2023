@@ -8,18 +8,16 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.auto.autopaths.CenterTwoBalance;
 import frc.robot.commands.flywheel.RunFlywheel;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.kicker.RunKickerIn;
 import frc.robot.commands.kicker.RunKickerOut;
 import frc.robot.commands.swerve.SetSwerveDrive;
+import frc.robot.commands.wrist.RunWristJoystick;
 import frc.robot.commands.wrist.SetWristSetpoint;
 import frc.robot.constants.BASE;
 import frc.robot.constants.BASE.SETPOINT;
@@ -76,6 +74,7 @@ public class RobotContainer {
               () -> -leftJoystick.getRawAxis(0),
               () -> -leftJoystick.getRawAxis(2)));
     }
+    m_wrist.setDefaultCommand(new RunWristJoystick(m_wrist, xboxController::getRightY));
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -151,14 +150,14 @@ public class RobotContainer {
   }
 
   public void initializeAutoChooser() {
-    m_autoChooser.addOption(
-        "CenterOneBalance",
-        new CenterTwoBalance(
-            "CenterOneBalance", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
+    // m_autoChooser.addOption(
+    //     "CenterOneBalance",
+    //     new CenterTwoBalance(
+    //         "CenterOneBalance", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
 
-    m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
+    // m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
-    SmartDashboard.putData("Auto Selector", m_autoChooser);
+    // SmartDashboard.putData("Auto Selector", m_autoChooser);
   }
 
   public void periodic() {
@@ -167,8 +166,6 @@ public class RobotContainer {
     // Absolute definition of jank right here. Please change this before Beach Blitz
     // :nate:
     // TODO: Fix
-    // if (Math.abs((MathUtil.applyDeadband(xboxController.getLeftX(), 0.05))) > 0) {
-    //   RunCommand(new SetWristManual(m_wrist, xboxController.getLeftX()));
-    // }
+
   }
 }

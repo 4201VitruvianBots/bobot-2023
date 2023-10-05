@@ -43,12 +43,16 @@ public final class INTAKE {
     }
   }
 
-  public static final double kWristMaxAccel = 0.0;
-  public static final double kWristMaxVel = 0.0;
-
-  public static final double kWristP = 0.0;
+  public static final double kWristP = 0.05;
   public static final double kWristI = 0.0;
   public static final double kWristD = 0.0;
 
-  public static final double kWristRadiansToEncoderUnits = 0.0;
+  public static final double kGearRatio = 60 / 1;
+
+  public static final double kEncoderUnitsPerRotation = 42;
+
+  private static final double slowDown = 1;
+
+  public static final double kWristEncoderUnitsToDegrees =
+      slowDown * kGearRatio * kEncoderUnitsPerRotation / 360;
 }
