@@ -2,35 +2,36 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.wrist;
+package frc.robot.commands.auto.autocommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.BASE.CONTROL_MODE;
+import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.subsystems.Wrist;
 
-public class SetWristManual extends CommandBase {
-  /** Creates a new SetWristManual. */
-  Wrist m_wrist;
+public class AutoWristSetpoint extends CommandBase {
+  private Wrist m_Wrist;
+  private SETPOINT m_desiredState;
 
-  double m_output;
+  public AutoWristSetpoint(Wrist wrist, SETPOINT desiredState) {
+    m_Wrist = wrist;
+    m_desiredState = desiredState;
 
-  public SetWristManual(Wrist wrist, double output) {
-    m_wrist = wrist;
-    m_output = output;
-
-    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_Wrist);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_wrist.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
-    m_wrist.setUserSetpoint(false);
+    m_Wrist.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
+    m_Wrist.setUserSetpoint(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_Wrist.SetWristDesiredSetpoint(m_desiredState);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

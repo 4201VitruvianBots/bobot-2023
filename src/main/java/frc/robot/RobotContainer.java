@@ -4,14 +4,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -24,9 +22,9 @@ import frc.robot.commands.kicker.RunKickerOut;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.wrist.SetWristSetpoint;
 import frc.robot.constants.BASE;
+import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.USB;
-import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
@@ -96,29 +94,33 @@ public class RobotContainer {
       rightJoystickTriggers[i] = new JoystickButton(rightJoystick, (i + 1));
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    xboxController.leftTrigger().whileTrue(
-      new RunIntake(m_intakeShooter)
-      .alongWith(new SetWristSetpoint(m_wrist, SETPOINT.INTAKING_LOW_CUBE)
-    ));
-    
+    xboxController
+        .leftTrigger()
+        .whileTrue(
+            new RunIntake(m_intakeShooter)
+                .alongWith(new SetWristSetpoint(m_wrist, SETPOINT.INTAKING_LOW_CUBE)));
+
     xboxController.x().whileTrue(new RunKickerOut(m_intakeShooter));
 
     xboxController.rightTrigger().whileTrue(new RunKickerIn(m_intakeShooter));
 
-    xboxController.y().whileTrue(
-      new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.HIGH)
-      .alongWith(new SetWristSetpoint(m_wrist, SETPOINT.SCORE_HIGH_CUBE)
-    ));
+    xboxController
+        .y()
+        .whileTrue(
+            new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.HIGH)
+                .alongWith(new SetWristSetpoint(m_wrist, SETPOINT.SCORE_HIGH_CUBE)));
 
-    xboxController.b().whileTrue(
-      new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.MEDIUM)
-      .alongWith(new SetWristSetpoint(m_wrist, SETPOINT.SCORE_MID_CUBE)
-    ));
+    xboxController
+        .b()
+        .whileTrue(
+            new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.MEDIUM)
+                .alongWith(new SetWristSetpoint(m_wrist, SETPOINT.SCORE_MID_CUBE)));
 
-    xboxController.a().whileTrue(
-      new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.LOW)
-      .alongWith(new SetWristSetpoint(m_wrist, SETPOINT.INTAKING_LOW_CUBE)
-    ));
+    xboxController
+        .a()
+        .whileTrue(
+            new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.LOW)
+                .alongWith(new SetWristSetpoint(m_wrist, SETPOINT.INTAKING_LOW_CUBE)));
 
     xboxController.povDown().whileTrue(new SetWristSetpoint(m_wrist, SETPOINT.STOWED));
 
@@ -164,8 +166,9 @@ public class RobotContainer {
 
     // Absolute definition of jank right here. Please change this before Beach Blitz
     // :nate:
-    if (Math.abs((MathUtil.applyDeadband(xboxController.getLeftX(), 0.05))) > 0) {
-      RunCommand(new SetWristManual(m_wrist, xboxController::getLeftX()));
-    }
+    // TODO: Fix
+    // if (Math.abs((MathUtil.applyDeadband(xboxController.getLeftX(), 0.05))) > 0) {
+    //   RunCommand(new SetWristManual(m_wrist, xboxController.getLeftX()));
+    // }
   }
 }

@@ -7,10 +7,13 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.auto.PlotAutoTrajectory;
 import frc.robot.commands.auto.autocommands.AutoRunIntakeMotors;
+import frc.robot.commands.auto.autocommands.AutoWristSetpoint;
 import frc.robot.commands.swerve.AutoBalance;
 import frc.robot.commands.swerve.SetSwerveNeutralMode;
 import frc.robot.commands.swerve.SetSwerveOdometry;
+import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.constants.INTAKE.FLYWHEEL_SPEED;
 import frc.robot.constants.INTAKE.KICKER_SPEED;
 import frc.robot.simulation.FieldSim;
@@ -42,30 +45,38 @@ public class CenterTwoBalance extends SequentialCommandGroup {
     addCommands(
         /** Setting Up Auto Zeros robot to path flips path if necessary */
         new SetSwerveOdometry(swerveDrive, trajectories.get(0).getInitialHolonomicPose(), fieldSim),
-        // new PlotAutoTrajectory(fieldSim, pathName, trajectories),
-
-        new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.NONE),
+        new PlotAutoTrajectory(fieldSim, pathName, trajectories),
+        new ParallelCommandGroup(
+            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.NONE),
+            new AutoWristSetpoint(wrist, SETPOINT.SCORE_HIGH_CUBE)),
         new WaitCommand(1),
         new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.SHOOT),
         new WaitCommand(0.25),
-        new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.NONE, KICKER_SPEED.NONE),
+        new ParallelCommandGroup(
+            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.NONE, KICKER_SPEED.NONE),
+            new AutoWristSetpoint(wrist, SETPOINT.STOWED)),
         new ParallelCommandGroup(
             swerveCommands.get(0),
             new SequentialCommandGroup(
                 new WaitCommand(3),
-                new AutoRunIntakeMotors(
-                    intakeShooter, FLYWHEEL_SPEED.INTAKE, KICKER_SPEED.INTAKE))),
+                new ParallelCommandGroup(
+                    new AutoWristSetpoint(wrist, SETPOINT.INTAKING_LOW_CUBE),
+                    new AutoRunIntakeMotors(
+                        intakeShooter, FLYWHEEL_SPEED.INTAKE, KICKER_SPEED.INTAKE)))),
         new ParallelCommandGroup(
             swerveCommands.get(1),
+            new AutoWristSetpoint(wrist, SETPOINT.STOWED),
             new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.STALL)),
 
         // run flywheel
         new ParallelCommandGroup(
             new AutoBalance(swerveDrive).withTimeout(4),
             new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.STALL)),
+        new AutoWristSetpoint(wrist, SETPOINT.SCORE_HIGH_CUBE),
         new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.SHOOT),
         new WaitCommand(0.25),
         new ParallelCommandGroup(
+            new AutoWristSetpoint(wrist, SETPOINT.SCORE_HIGH_CUBE),
             new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.NONE, KICKER_SPEED.NONE),
             new AutoBalance(swerveDrive)),
         new SetSwerveNeutralMode(swerveDrive, NeutralMode.Brake)
