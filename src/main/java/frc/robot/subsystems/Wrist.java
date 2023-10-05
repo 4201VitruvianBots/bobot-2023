@@ -7,6 +7,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.BASE;
+import frc.robot.constants.BASE.CONSTANTS;
 import frc.robot.constants.BASE.CONTROL_MODE;
 import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.constants.CAN;
@@ -24,7 +25,8 @@ public class Wrist extends SubsystemBase {
       new PIDController(INTAKE.kWristP, INTAKE.kWristI, INTAKE.kWristD);
 
   public Wrist() {
-    m_wristMotor.setInverted(true);
+    m_wristMotor.setInverted(false);
+    m_wristMotor.getEncoder().setPosition(0);
   }
 
   public CONTROL_MODE getClosedLoopControlMode() {
@@ -37,6 +39,10 @@ public class Wrist extends SubsystemBase {
 
   public void setUserInput(double input) {
     m_joystickInput = input;
+  }
+
+  public void setSensorPosition(double position) {
+    m_wristMotor.getEncoder().setPosition(position);
   }
 
   public void setClosedLoopControlMode(CONTROL_MODE mode) {
@@ -63,7 +69,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public double getPositionDegrees() {
-    return getSensorPosition() * BASE.CONSTANTS.encoderUnitsToDegrees;
+    return getSensorPosition() * BASE.CONSTANTS.kNeoEncoderUnitsToDegrees;
   }
 
   private double getSensorPosition() {
@@ -83,11 +89,12 @@ public class Wrist extends SubsystemBase {
       case OPEN_LOOP:
         double percentOutput = m_joystickInput * BASE.CONSTANTS.kPercentOutputMultiplier;
 
+        setWristPercentOutput(percentOutput);
       case CLOSED_LOOP:
         setWristPercentOutput(
             m_controller.calculate(
                 m_wristMotor.getEncoder().getPosition(),
-                m_desiredSetpointRadians * INTAKE.kEncoderUnitsPerRotation));
+                Units.radiansToDegrees(m_desiredSetpointRadians) / CONSTANTS.kNeoEncoderUnitsToDegrees));
 
         break;
     }

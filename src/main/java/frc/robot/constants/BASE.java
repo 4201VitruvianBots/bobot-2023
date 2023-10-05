@@ -12,11 +12,15 @@ public class BASE {
 
   public static final class CONSTANTS {
     public static final int kFalconSensorUnitsPerRotation = 2048;
+    public static final int kNeoSensorUnitsPerRotation = 42;
     public static final int kCANCoderSensorUnitsPerRotation = 4096;
 
     public static final double gearRatio = 60 / 1;
-    public static final double encoderUnitsToDegrees =
+    public static final double kFalconEncoderUnitsToDegrees =
         360.0 / (kFalconSensorUnitsPerRotation * gearRatio);
+    
+    public static final double kNeoEncoderUnitsToDegrees =
+        gearRatio * kNeoSensorUnitsPerRotation / 360;
     public static final double kPercentOutputMultiplier = 0.2;
   }
 

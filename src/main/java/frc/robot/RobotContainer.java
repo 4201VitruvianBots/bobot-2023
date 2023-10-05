@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -19,6 +20,7 @@ import frc.robot.commands.kicker.RunKickerOut;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.wrist.RunWristJoystick;
 import frc.robot.commands.wrist.SetWristSetpoint;
+import frc.robot.commands.wrist.ZeroWristEncoder;
 import frc.robot.constants.BASE;
 import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.constants.INTAKE;
@@ -56,6 +58,12 @@ public class RobotContainer {
     configureBindings();
 
     initializeAutoChooser();
+
+    initializeButtonCommands();
+  }
+
+  public void initializeButtonCommands() {
+    SmartDashboard.putData(new ZeroWristEncoder(m_wrist));
   }
 
   public void initializeSubsystems() {
