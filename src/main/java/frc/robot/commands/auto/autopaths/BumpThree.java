@@ -22,8 +22,8 @@ import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Wrist;
 import frc.robot.utils.TrajectoryUtils;
 
-public class CenterTwoBalance extends SequentialCommandGroup {
-  public CenterTwoBalance(
+public class BumpTwo extends SequentialCommandGroup {
+  public BumpTwo(
       String pathName,
       SwerveDrive swerveDrive,
       FieldSim fieldSim,
@@ -58,7 +58,7 @@ public class CenterTwoBalance extends SequentialCommandGroup {
         new ParallelCommandGroup(
             swerveCommands.get(0),
             new SequentialCommandGroup(
-                new WaitCommand(3),
+                new WaitCommand(1.75),
                 new ParallelCommandGroup(
                     new AutoWristSetpoint(wrist, SETPOINT.INTAKING_LOW_CUBE),
                     new AutoRunIntakeMotors(
@@ -66,19 +66,17 @@ public class CenterTwoBalance extends SequentialCommandGroup {
         new ParallelCommandGroup(
             swerveCommands.get(1),
             new AutoWristSetpoint(wrist, SETPOINT.STOWED),
-            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.STALL)),
+            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.MEDIUM, KICKER_SPEED.STALL)),
 
         // run flywheel
-        new ParallelCommandGroup(
-            new AutoBalance(swerveDrive).withTimeout(4),
-            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.STALL)),
         new AutoWristSetpoint(wrist, SETPOINT.SCORE_HIGH_CUBE),
-        new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.SHOOT),
+        new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.MEDIUM, KICKER_SPEED.SHOOT),
         new WaitCommand(0.25),
         new ParallelCommandGroup(
+            swerveCommands.get(2),
             new AutoWristSetpoint(wrist, SETPOINT.STOWED),
-            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.NONE, KICKER_SPEED.NONE),
-            new AutoBalance(swerveDrive)),
+            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.NONE, KICKER_SPEED.NONE)),
+  
         new SetSwerveNeutralMode(swerveDrive, NeutralMode.Brake)
             .andThen(() -> swerveDrive.drive(0, 0, 0, false, false)));
   }

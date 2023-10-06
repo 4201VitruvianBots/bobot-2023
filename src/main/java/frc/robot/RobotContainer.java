@@ -10,9 +10,13 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.auto.autopaths.BumpThree;
+import frc.robot.commands.auto.autopaths.CenterTwoBalance;
+import frc.robot.commands.auto.autopaths.DriveForward;
 import frc.robot.commands.flywheel.RunFlywheel;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.kicker.RunKickerIn;
@@ -158,14 +162,25 @@ public class RobotContainer {
   }
 
   public void initializeAutoChooser() {
-    // m_autoChooser.addOption(
-    //     "CenterOneBalance",
-    //     new CenterTwoBalance(
-    //         "CenterOneBalance", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
+    m_autoChooser.addOption(
+        "CenterTwoBalance",
+        new CenterTwoBalance(
+            "CenterTwoBalance", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
 
-    // m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
+            m_autoChooser.addOption(
+        "BumpThree",
+        new BumpThree(
+            "BumpThree", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
 
-    // SmartDashboard.putData("Auto Selector", m_autoChooser);
+            m_autoChooser.addOption(
+            "DriveForward",
+            new DriveForward(
+                "DriveForward", m_swerveDrive, m_fieldSim));
+    
+
+    m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
+
+    SmartDashboard.putData("Auto Selector", m_autoChooser);
   }
 
   public void periodic() {
