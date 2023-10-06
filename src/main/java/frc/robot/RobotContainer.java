@@ -23,6 +23,7 @@ import frc.robot.commands.kicker.RunKickerIn;
 import frc.robot.commands.kicker.RunKickerOut;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.wrist.RunWristJoystick;
+import frc.robot.commands.wrist.SetWristManual;
 import frc.robot.commands.wrist.SetWristSetpoint;
 import frc.robot.commands.wrist.ZeroWristEncoder;
 import frc.robot.constants.BASE;
@@ -68,6 +69,8 @@ public class RobotContainer {
 
   public void initializeButtonCommands() {
     SmartDashboard.putData(new ZeroWristEncoder(m_wrist));
+    SmartDashboard.putData(new SetWristSetpoint(m_wrist, SETPOINT.STOWED));
+    SmartDashboard.putData(new SetWristManual(m_wrist, 0.0));
   }
 
   public void initializeSubsystems() {

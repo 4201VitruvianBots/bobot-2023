@@ -81,6 +81,7 @@ public class Wrist extends SubsystemBase {
   public void updateSmartDashboard() {
     SmartDashboard.putNumber("Wrist Angles Degrees", getPositionDegrees());
     SmartDashboard.putNumber("Wrist Encoder Units", m_wristMotor.getEncoder().getPosition());
+    SmartDashboard.putNumber("Wrist Desired Angle", Units.radiansToDegrees(m_desiredSetpointRadians));
   }
 
   @Override
