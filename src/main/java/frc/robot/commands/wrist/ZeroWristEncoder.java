@@ -23,4 +23,9 @@ public class ZeroWristEncoder extends InstantCommand {
   public void initialize() {
     m_wrist.setSensorPosition(0.0);
   }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }

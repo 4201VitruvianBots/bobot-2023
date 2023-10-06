@@ -80,6 +80,7 @@ public class Wrist extends SubsystemBase {
 
   public void updateSmartDashboard() {
     SmartDashboard.putNumber("Wrist Angles Degrees", getPositionDegrees());
+    SmartDashboard.putNumber("Wrist Encoder Units", m_wristMotor.getEncoder().getPosition());
   }
 
   @Override
@@ -95,7 +96,7 @@ public class Wrist extends SubsystemBase {
       case CLOSED_LOOP:
         m_wristMotor.setVoltage(
             m_feedForward.calculate(
-                m_desiredSetpointRadians, m_wristMotor.getEncoder().getVelocity()));
+                m_desiredSetpointRadians + 0.992, m_wristMotor.getEncoder().getVelocity()));
 
         // setWristPercentOutput(
         //     m_controller.calculate(
