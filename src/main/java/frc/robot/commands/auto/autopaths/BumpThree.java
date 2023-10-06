@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.auto.PlotAutoTrajectory;
 import frc.robot.commands.auto.autocommands.AutoRunIntakeMotors;
 import frc.robot.commands.auto.autocommands.AutoWristSetpoint;
-import frc.robot.commands.swerve.AutoBalance;
 import frc.robot.commands.swerve.SetSwerveNeutralMode;
 import frc.robot.commands.swerve.SetSwerveOdometry;
 import frc.robot.constants.BASE.SETPOINT;
@@ -22,8 +21,8 @@ import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Wrist;
 import frc.robot.utils.TrajectoryUtils;
 
-public class BumpTwo extends SequentialCommandGroup {
-  public BumpTwo(
+public class BumpThree extends SequentialCommandGroup {
+  public BumpThree(
       String pathName,
       SwerveDrive swerveDrive,
       FieldSim fieldSim,
@@ -76,7 +75,6 @@ public class BumpTwo extends SequentialCommandGroup {
             swerveCommands.get(2),
             new AutoWristSetpoint(wrist, SETPOINT.STOWED),
             new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.NONE, KICKER_SPEED.NONE)),
-  
         new SetSwerveNeutralMode(swerveDrive, NeutralMode.Brake)
             .andThen(() -> swerveDrive.drive(0, 0, 0, false, false)));
   }

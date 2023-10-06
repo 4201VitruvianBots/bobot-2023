@@ -2,14 +2,11 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.BASE;
-import frc.robot.constants.BASE.CONSTANTS;
 import frc.robot.constants.BASE.CONTROL_MODE;
 import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.constants.CAN;
@@ -26,8 +23,8 @@ public class Wrist extends SubsystemBase {
   // private PIDController m_controller =
   //     new PIDController(INTAKE.kWristP, INTAKE.kWristI, INTAKE.kWristD);
 
-  private ArmFeedforward m_feedForward = 
-    new ArmFeedforward(INTAKE.kWristS, INTAKE.kWristG, INTAKE.kWristV, INTAKE.kWristA);
+  private ArmFeedforward m_feedForward =
+      new ArmFeedforward(INTAKE.kWristS, INTAKE.kWristG, INTAKE.kWristV, INTAKE.kWristA);
 
   public Wrist() {
     m_wristMotor.setInverted(false);
@@ -96,13 +93,15 @@ public class Wrist extends SubsystemBase {
 
         setWristPercentOutput(percentOutput);
       case CLOSED_LOOP:
-
-        m_wristMotor.setVoltage(m_feedForward.calculate(m_desiredSetpointRadians, m_wristMotor.getEncoder().getVelocity()));
+        m_wristMotor.setVoltage(
+            m_feedForward.calculate(
+                m_desiredSetpointRadians, m_wristMotor.getEncoder().getVelocity()));
 
         // setWristPercentOutput(
         //     m_controller.calculate(
         //         m_wristMotor.getEncoder().getPosition(),
-        //         Units.radiansToDegrees(m_desiredSetpointRadians) / CONSTANTS.kNeoEncoderUnitsToDegrees));
+        //         Units.radiansToDegrees(m_desiredSetpointRadians) /
+        // CONSTANTS.kNeoEncoderUnitsToDegrees));
 
         break;
     }

@@ -18,7 +18,7 @@ public class BASE {
     public static final double gearRatio = 60 / 1;
     public static final double kFalconEncoderUnitsToDegrees =
         360.0 / (kFalconSensorUnitsPerRotation * gearRatio);
-    
+
     public static final double kNeoEncoderUnitsToDegrees =
         gearRatio * kNeoSensorUnitsPerRotation / 360;
     public static final double kPercentOutputMultiplier = 0.2;
