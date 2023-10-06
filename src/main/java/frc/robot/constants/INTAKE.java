@@ -47,5 +47,10 @@ public final class INTAKE {
   public static final double kWristI = 0.0;
   public static final double kWristD = 0.0;
 
+  public static final double kWristS = 0.0;
+  public static final double kWristG = 0.0;
+  public static final double kWristV = 0.0;
+  public static final double kWristA = 0.0;
+
   public static final double kGearRatio = 60 / 1;
 }
