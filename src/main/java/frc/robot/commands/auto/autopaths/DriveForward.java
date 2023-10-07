@@ -18,9 +18,7 @@ public class DriveForward extends SequentialCommandGroup {
   public DriveForward(
       String pathName,
       SwerveDrive swerveDrive,
-      FieldSim fieldSim,
-      Wrist wrist,
-      IntakeShooter intakeShooter) {
+      FieldSim fieldSim) {
 
     double maxVel = Units.feetToMeters(8);
     double maxAccel = Units.feetToMeters(8);
