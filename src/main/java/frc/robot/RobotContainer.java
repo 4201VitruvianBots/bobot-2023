@@ -171,10 +171,10 @@ public class RobotContainer {
         "BumpThree",
         new BumpThree("BumpThree", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
 
-    m_autoChooser.addOption(
-        "DriveForward",
-        new DriveForward("DriveForward", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
-    ;
+    // m_autoChooser.addOption(
+    //     "DriveForward",
+    //     new DriveForward("DriveForward", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
+    // ;
 
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
@@ -187,7 +187,7 @@ public class RobotContainer {
     // Absolute definition of jank right here. Please change this before Beach Blitz
     // :nate:
     // TODO: Fix
-    if (!(xboxController.leftTrigger().getAsBoolean() || xboxController.y().getAsBoolean() || xboxController.b().getAsBoolean() || xboxController.a().getAsBoolean() || xboxController.povDown().getAsBoolean()))  {
+    if (!(xboxController.leftTrigger().getAsBoolean() || xboxController.y().getAsBoolean() || xboxController.b().getAsBoolean() || xboxController.a().getAsBoolean() || xboxController.povDown().getAsBoolean()) && xboxController.getLeftY() > 0.1)  {
       WristHandler wristHandler = new WristHandler(m_wrist, null, xboxController::getLeftY);
       wristHandler.schedule();
     }

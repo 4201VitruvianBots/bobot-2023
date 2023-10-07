@@ -12,8 +12,8 @@ public final class INTAKE {
     INTAKE(0.25),
     NONE(0.0),
     LOW(-0.15),
-    MEDIUM(-0.3),
-    HIGH(-0.4);
+    MEDIUM(-0.20),
+    HIGH(-0.40);
 
     public final double speed;
 
@@ -30,7 +30,7 @@ public final class INTAKE {
     INTAKE(-0.85),
     STALL(-0.1),
     NONE(0.0),
-    SHOOT(0.5);
+    SHOOT(0.35);
 
     public final double speed;
 
