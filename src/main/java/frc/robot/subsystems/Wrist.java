@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -41,6 +43,7 @@ public class Wrist extends SubsystemBase {
   public Wrist() {
     m_wristMotor.setInverted(false);
     m_wristMotor.getEncoder().setPosition(0);
+    
 
     NetworkTable wristNtTab = NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Wrist");
     m_percentOutputPub = wristNtTab.getDoubleTopic("Wrist Percent Output").publish();
@@ -61,6 +64,9 @@ public class Wrist extends SubsystemBase {
 
   public void setUserInput(double input) {
     m_joystickInput = input;
+  }
+  public void setNeutralMode(IdleMode mode) {
+    m_wristMotor.setIdleMode(mode);
   }
 
   public void setSensorPosition(double position) {

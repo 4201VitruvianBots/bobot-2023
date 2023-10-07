@@ -48,36 +48,35 @@ public class CenterTwoBalance extends SequentialCommandGroup {
         new PlotAutoTrajectory(fieldSim, pathName, trajectories),
         new ParallelCommandGroup(
             new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.NONE),
-            new AutoWristSetpoint(wrist, SETPOINT.SCORE_HIGH_CUBE)),
+            new AutoWristSetpoint(wrist, SETPOINT.SCORE_HIGH_CUBE)).withTimeout(1),
         new WaitCommand(1),
-        new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.SHOOT),
-        new WaitCommand(0.25),
+        new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.SHOOT).withTimeout(0.5),
         new ParallelCommandGroup(
             new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.NONE, KICKER_SPEED.NONE),
-            new AutoWristSetpoint(wrist, SETPOINT.STOWED)),
+            new AutoWristSetpoint(wrist, SETPOINT.STOWED)).withTimeout(0.25),
         new ParallelCommandGroup(
             swerveCommands.get(0),
             new SequentialCommandGroup(
                 new WaitCommand(3),
                 new ParallelCommandGroup(
-                    new AutoWristSetpoint(wrist, SETPOINT.INTAKING_LOW_CUBE),
+                    new AutoWristSetpoint(wrist, SETPOINT.INTAKING_LOW_CUBE).withTimeout(0.25),
                     new AutoRunIntakeMotors(
-                        intakeShooter, FLYWHEEL_SPEED.INTAKE, KICKER_SPEED.INTAKE)))),
+                        intakeShooter, FLYWHEEL_SPEED.INTAKE, KICKER_SPEED.INTAKE).withTimeout(0.25)))).withTimeout(trajectories.get(0).getTotalTimeSeconds()),
         new ParallelCommandGroup(
             swerveCommands.get(1),
             new AutoWristSetpoint(wrist, SETPOINT.STOWED),
-            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.STALL)),
+            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.STALL)).withTimeout(trajectories.get(1).getTotalTimeSeconds()),
 
         // run flywheel
         new ParallelCommandGroup(
             new AutoBalance(swerveDrive).withTimeout(4),
-            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.STALL)),
-        new AutoWristSetpoint(wrist, SETPOINT.SCORE_HIGH_CUBE),
-        new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.SHOOT),
+            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.STALL)).withTimeout(0.25),
+        new AutoWristSetpoint(wrist, SETPOINT.SCORE_HIGH_CUBE).withTimeout(0.25),
+        new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.SHOOT).withTimeout(0.25),
         new WaitCommand(0.25),
         new ParallelCommandGroup(
-            new AutoWristSetpoint(wrist, SETPOINT.STOWED),
-            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.NONE, KICKER_SPEED.NONE),
+            new AutoWristSetpoint(wrist, SETPOINT.STOWED).withTimeout(0.25),
+            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.NONE, KICKER_SPEED.NONE).withTimeout(0.25),
             new AutoBalance(swerveDrive)),
         new SetSwerveNeutralMode(swerveDrive, NeutralMode.Brake)
             .andThen(() -> swerveDrive.drive(0, 0, 0, false, false)));

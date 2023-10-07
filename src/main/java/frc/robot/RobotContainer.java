@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -142,14 +144,17 @@ public class RobotContainer {
 
   public void disableInit() {
     m_swerveDrive.setNeutral(NeutralMode.Coast);
+    m_wrist.setNeutralMode(IdleMode.kCoast);
   }
 
   public void teleopInit() {
     m_swerveDrive.setNeutral(NeutralMode.Brake);
+    m_wrist.setNeutralMode(IdleMode.kBrake);
   }
 
   public void autonomousInit() {
     m_swerveDrive.setNeutral(NeutralMode.Brake);
+    m_wrist.setNeutralMode(IdleMode.kBrake);
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
