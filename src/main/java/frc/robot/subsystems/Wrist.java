@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,13 +16,12 @@ import frc.robot.constants.INTAKE;
 public class Wrist extends SubsystemBase {
 
   private double m_desiredSetpointRadians;
-  private CONTROL_MODE m_controlMode = CONTROL_MODE.CLOSED_LOOP;
+  private CONTROL_MODE m_controlMode = CONTROL_MODE.OPEN_LOOP;
   private final CANSparkMax m_wristMotor = new CANSparkMax(CAN.wristMotor, MotorType.kBrushless);
   private boolean m_userSetpoint;
   private double m_joystickInput;
 
-  // private PIDController m_controller =
-  //     new PIDController(INTAKE.kWristP, INTAKE.kWristI, INTAKE.kWristD);
+  private PIDController m_pidController = new PIDController(INTAKE.kWristP, INTAKE.kWristI, INTAKE.kWristD);
 
   private ArmFeedforward m_feedForward =
       new ArmFeedforward(INTAKE.kWristS, INTAKE.kWristG, INTAKE.kWristV, INTAKE.kWristA);
@@ -79,15 +79,17 @@ public class Wrist extends SubsystemBase {
   }
 
   public void updateSmartDashboard() {
+    SmartDashboard.putNumber("Wrist Percent Output", m_wristMotor.get());
     SmartDashboard.putNumber("Wrist Angles Degrees", getPositionDegrees());
     SmartDashboard.putNumber("Wrist Encoder Units", m_wristMotor.getEncoder().getPosition());
     SmartDashboard.putNumber("Wrist Desired Angle", Units.radiansToDegrees(m_desiredSetpointRadians));
+    SmartDashboard.putString("Wrist Control Mode", m_controlMode.name());
   }
 
   @Override
   public void periodic() {
-
     updateSmartDashboard();
+
     switch (m_controlMode) {
       default:
       case OPEN_LOOP:
@@ -95,15 +97,16 @@ public class Wrist extends SubsystemBase {
 
         setWristPercentOutput(percentOutput);
       case CLOSED_LOOP:
-        m_wristMotor.setVoltage(
-            m_feedForward.calculate(
-                m_desiredSetpointRadians + 0.992, m_wristMotor.getEncoder().getVelocity()));
 
-        // setWristPercentOutput(
-        //     m_controller.calculate(
-        //         m_wristMotor.getEncoder().getPosition(),
-        //         Units.radiansToDegrees(m_desiredSetpointRadians) /
-        // CONSTANTS.kNeoEncoderUnitsToDegrees));
+        // FRC 5712 logic
+        double feedForward = m_feedForward.calculate(m_desiredSetpointRadians, 0);
+        double pid = m_pidController.calculate(getSensorPosition(), Units.radiansToDegrees(m_desiredSetpointRadians) / BASE.CONSTANTS.kNeoEncoderUnitsToDegrees);
+
+        double output = feedForward + pid;
+
+        SmartDashboard.putNumber("Wrist Voltage", output);
+        
+        m_wristMotor.setVoltage(output);
 
         break;
     }

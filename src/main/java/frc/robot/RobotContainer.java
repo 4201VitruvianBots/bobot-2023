@@ -24,7 +24,7 @@ import frc.robot.commands.kicker.RunKickerOut;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.commands.wrist.RunWristJoystick;
 import frc.robot.commands.wrist.SetWristManual;
-import frc.robot.commands.wrist.SetWristSetpoint;
+import frc.robot.commands.wrist.WristHandler;
 import frc.robot.commands.wrist.ZeroWristEncoder;
 import frc.robot.constants.BASE;
 import frc.robot.constants.BASE.SETPOINT;
@@ -69,8 +69,6 @@ public class RobotContainer {
 
   public void initializeButtonCommands() {
     SmartDashboard.putData(new ZeroWristEncoder(m_wrist));
-    SmartDashboard.putData(new SetWristSetpoint(m_wrist, SETPOINT.STOWED));
-    SmartDashboard.putData(new SetWristManual(m_wrist, 0.0));
   }
 
   public void initializeSubsystems() {
@@ -89,7 +87,6 @@ public class RobotContainer {
               () -> -leftJoystick.getRawAxis(0),
               () -> -leftJoystick.getRawAxis(2)));
     }
-    m_wrist.setDefaultCommand(new RunWristJoystick(m_wrist, xboxController::getRightY));
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -112,7 +109,7 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             new RunIntake(m_intakeShooter)
-                .alongWith(new SetWristSetpoint(m_wrist, SETPOINT.INTAKING_LOW_CUBE)));
+                .alongWith(new WristHandler(m_wrist, SETPOINT.INTAKING_LOW_CUBE, xboxController::getLeftY)));
 
     xboxController.x().whileTrue(new RunKickerOut(m_intakeShooter));
 
@@ -122,25 +119,25 @@ public class RobotContainer {
         .y()
         .whileTrue(
             new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.HIGH)
-                .alongWith(new SetWristSetpoint(m_wrist, SETPOINT.SCORE_HIGH_CUBE)));
+                .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_HIGH_CUBE, xboxController::getLeftY)));
 
     xboxController
         .b()
         .whileTrue(
             new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.MEDIUM)
-                .alongWith(new SetWristSetpoint(m_wrist, SETPOINT.SCORE_MID_CUBE)));
+                .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_MID_CUBE, xboxController::getLeftY)));
 
     xboxController
         .a()
         .whileTrue(
             new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.LOW)
-                .alongWith(new SetWristSetpoint(m_wrist, SETPOINT.INTAKING_LOW_CUBE)));
+                .alongWith(new WristHandler(m_wrist, SETPOINT.INTAKING_LOW_CUBE, xboxController::getLeftY)));
 
-    xboxController.povDown().whileTrue(new SetWristSetpoint(m_wrist, SETPOINT.STOWED));
+    xboxController.povDown().whileTrue(new WristHandler(m_wrist, SETPOINT.STOWED, xboxController::getLeftY));
 
     xboxController
         .rightStick()
-        .whileTrue((new SetWristSetpoint(m_wrist, BASE.SETPOINT.INTAKING_LOW_CUBE)));
+        .whileTrue((new WristHandler(m_wrist, BASE.SETPOINT.INTAKING_LOW_CUBE, xboxController::getLeftY)));
   }
 
   public void disableInit() {
@@ -190,6 +187,9 @@ public class RobotContainer {
     // Absolute definition of jank right here. Please change this before Beach Blitz
     // :nate:
     // TODO: Fix
-
+    if (!(xboxController.leftTrigger().getAsBoolean() || xboxController.y().getAsBoolean() || xboxController.b().getAsBoolean() || xboxController.a().getAsBoolean() || xboxController.povDown().getAsBoolean()))  {
+      WristHandler wristHandler = new WristHandler(m_wrist, null, xboxController::getLeftY);
+      wristHandler.schedule();
+    }
   }
 }

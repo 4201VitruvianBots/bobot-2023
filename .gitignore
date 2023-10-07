@@ -175,3 +175,7 @@ ctre_sim/
 *.wpilog
 
 src/main/java/frc/robot/BuildConstants.java
+
+simgui-ds.json
+
+simgui.json

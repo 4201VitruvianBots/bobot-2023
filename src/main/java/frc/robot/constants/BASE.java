@@ -27,11 +27,11 @@ public class BASE {
   public enum SETPOINT {
     // Units are in Radians
 
-    STOWED(Units.degreesToRadians(98.0)),
-    INTAKING_LOW_CUBE(Units.degreesToRadians(-13.5)),
-    SCORE_LOW_REVERSE(Units.degreesToRadians(-14.0)),
-    SCORE_MID_CUBE(Units.degreesToRadians(127.0)), // Temporary value
-    SCORE_HIGH_CUBE(Units.degreesToRadians(147.0)),
+    STOWED(Units.degreesToRadians(0.0)), // Temporary value
+    INTAKING_LOW_CUBE(Units.degreesToRadians(164.0)), // Temporary value
+    SCORE_LOW_REVERSE(Units.degreesToRadians(15.0)), // Temporary value
+    SCORE_MID_CUBE(Units.degreesToRadians(30.0)), // Temporary value
+    SCORE_HIGH_CUBE(Units.degreesToRadians(45.0)), // Temporary value
     INTAKING_EXTENDED_CUBE(SCORE_HIGH_CUBE.get());
 
     public double getWristSetpointRadians() {

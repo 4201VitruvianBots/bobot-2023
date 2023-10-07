@@ -43,7 +43,7 @@ public final class INTAKE {
     }
   }
 
-  public static final double kWristP = 0.05;
+  public static final double kWristP = 0.35;
   public static final double kWristI = 0.0;
   public static final double kWristD = 0.0;
 
