@@ -131,7 +131,7 @@ public class RobotContainer {
         .a()
         .whileTrue(
             new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.LOW)
-                .alongWith(new WristHandler(m_wrist, SETPOINT.INTAKING_LOW_CUBE, xboxController::getLeftY)));
+                .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_LOW_REVERSE, xboxController::getLeftY)));
 
     xboxController.povDown().whileTrue(new WristHandler(m_wrist, SETPOINT.STOWED, xboxController::getLeftY));
 
