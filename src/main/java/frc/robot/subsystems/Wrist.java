@@ -5,6 +5,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.BASE;
@@ -26,9 +31,24 @@ public class Wrist extends SubsystemBase {
   private ArmFeedforward m_feedForward =
       new ArmFeedforward(INTAKE.kWristS, INTAKE.kWristG, INTAKE.kWristV, INTAKE.kWristA);
 
+  private DoublePublisher m_percentOutputPub,
+    m_voltagePub,
+    m_angleDegreesPub,
+    m_encoderPositionPub,
+    m_desiredAnglePub;
+  private StringPublisher m_controlModePub;
+
   public Wrist() {
     m_wristMotor.setInverted(false);
     m_wristMotor.getEncoder().setPosition(0);
+
+    NetworkTable wristNtTab = NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Wrist");
+    m_percentOutputPub = wristNtTab.getDoubleTopic("Wrist Percent Output").publish();
+    m_voltagePub = wristNtTab.getDoubleTopic("Wrist Output Voltage").publish();
+    m_angleDegreesPub = wristNtTab.getDoubleTopic("Wrist Angle Degrees").publish();
+    m_encoderPositionPub = wristNtTab.getDoubleTopic("Wrist Encoder Units").publish();
+    m_desiredAnglePub = wristNtTab.getDoubleTopic("Wrist Desired Angle").publish();
+    m_controlModePub = wristNtTab.getStringTopic("Wrist Control Mode").publish();
   }
 
   public CONTROL_MODE getClosedLoopControlMode() {
@@ -78,17 +98,21 @@ public class Wrist extends SubsystemBase {
     return m_wristMotor.getEncoder().getPosition();
   }
 
-  public void updateSmartDashboard() {
-    SmartDashboard.putNumber("Wrist Percent Output", m_wristMotor.get());
-    SmartDashboard.putNumber("Wrist Angles Degrees", getPositionDegrees());
-    SmartDashboard.putNumber("Wrist Encoder Units", m_wristMotor.getEncoder().getPosition());
-    SmartDashboard.putNumber("Wrist Desired Angle", Units.radiansToDegrees(m_desiredSetpointRadians));
-    SmartDashboard.putString("Wrist Control Mode", m_controlMode.name());
+  public void updateShuffleboard() {
+    m_angleDegreesPub.set(getPositionDegrees());
+    m_encoderPositionPub.set(m_wristMotor.getEncoder().getPosition());
+    m_desiredAnglePub.set(Units.radiansToDegrees(m_desiredSetpointRadians));
+    m_controlModePub.set(m_controlMode.name());
+
+    if (RobotBase.isReal()) {
+      m_percentOutputPub.set(m_wristMotor.get());
+      m_voltagePub.set(m_wristMotor.getAppliedOutput());
+    }
   }
 
   @Override
   public void periodic() {
-    updateSmartDashboard();
+    updateShuffleboard();
 
     switch (m_controlMode) {
       default:
@@ -96,6 +120,11 @@ public class Wrist extends SubsystemBase {
         double percentOutput = m_joystickInput * BASE.CONSTANTS.kPercentOutputMultiplier;
 
         setWristPercentOutput(percentOutput);
+
+        if (RobotBase.isSimulation()) {
+          m_voltagePub.set(percentOutput);
+        }
+        break;
       case CLOSED_LOOP:
 
         // FRC 5712 logic
@@ -104,9 +133,11 @@ public class Wrist extends SubsystemBase {
 
         double output = feedForward + pid;
 
-        SmartDashboard.putNumber("Wrist Voltage", output);
-        
         m_wristMotor.setVoltage(output);
+
+        if (RobotBase.isSimulation()) {
+          m_voltagePub.set(output);
+        }
 
         break;
     }
