@@ -43,7 +43,6 @@ public class Wrist extends SubsystemBase {
   public Wrist() {
     m_wristMotor.setInverted(false);
     m_wristMotor.getEncoder().setPosition(0);
-    
 
     NetworkTable wristNtTab = NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Wrist");
     m_percentOutputPub = wristNtTab.getDoubleTopic("Wrist Percent Output").publish();

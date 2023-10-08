@@ -46,8 +46,8 @@ import frc.robot.subsystems.Wrist;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
-  private final Wrist m_wrist = new Wrist();
-  private final IntakeShooter m_intakeShooter = new IntakeShooter();
+  //private final Wrist m_wrist = new Wrist();
+  //private final IntakeShooter m_intakeShooter = new IntakeShooter();
   private final FieldSim m_fieldSim = new FieldSim(m_swerveDrive);
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final Joystick leftJoystick = new Joystick(USB.leftJoystick);
@@ -70,7 +70,7 @@ public class RobotContainer {
   }
 
   public void initializeButtonCommands() {
-    SmartDashboard.putData(new ZeroWristEncoder(m_wrist));
+    //SmartDashboard.putData(new ZeroWristEncoder(m_wrist));
   }
 
   public void initializeSubsystems() {
@@ -101,60 +101,60 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    for (int i = 0; i < leftJoystickTriggers.length; i++)
-      leftJoystickTriggers[i] = new JoystickButton(leftJoystick, (i + 1));
-    for (int i = 0; i < rightJoystickTriggers.length; i++)
-      rightJoystickTriggers[i] = new JoystickButton(rightJoystick, (i + 1));
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    // for (int i = 0; i < leftJoystickTriggers.length; i++)
+    //   leftJoystickTriggers[i] = new JoystickButton(leftJoystick, (i + 1));
+    // for (int i = 0; i < rightJoystickTriggers.length; i++)
+    //   rightJoystickTriggers[i] = new JoystickButton(rightJoystick, (i + 1));
+    // // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    xboxController
-        .leftTrigger()
-        .whileTrue(
-            new RunIntake(m_intakeShooter)
-                .alongWith(new WristHandler(m_wrist, SETPOINT.INTAKING_LOW_CUBE, xboxController::getLeftY)));
+    // xboxController
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         new RunIntake(m_intakeShooter)
+    //             .alongWith(new WristHandler(m_wrist, SETPOINT.INTAKING_LOW_CUBE, xboxController::getLeftY)));
 
-    xboxController.x().whileTrue(new RunKickerOut(m_intakeShooter));
+    // xboxController.x().whileTrue(new RunKickerOut(m_intakeShooter));
 
-    xboxController.rightTrigger().whileTrue(new RunKickerIn(m_intakeShooter));
+    // xboxController.rightTrigger().whileTrue(new RunKickerIn(m_intakeShooter));
 
-    xboxController
-        .y()
-        .whileTrue(
-            new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.HIGH)
-                .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_HIGH_CUBE, xboxController::getLeftY)));
+    // xboxController
+    //     .y()
+    //     .whileTrue(
+    //         new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.HIGH)
+    //             .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_HIGH_CUBE, xboxController::getLeftY)));
 
-    xboxController
-        .b()
-        .whileTrue(
-            new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.MEDIUM)
-                .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_MID_CUBE, xboxController::getLeftY)));
+    // xboxController
+    //     .b()
+    //     .whileTrue(
+    //         new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.MEDIUM)
+    //             .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_MID_CUBE, xboxController::getLeftY)));
 
-    xboxController
-        .a()
-        .whileTrue(
-            new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.LOW)
-                .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_LOW_REVERSE, xboxController::getLeftY)));
+    // xboxController
+    //     .a()
+    //     .whileTrue(
+    //         new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.LOW)
+    //             .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_LOW_REVERSE, xboxController::getLeftY)));
 
-    xboxController.povDown().whileTrue(new WristHandler(m_wrist, SETPOINT.STOWED, xboxController::getLeftY));
+    // xboxController.povDown().whileTrue(new WristHandler(m_wrist, SETPOINT.STOWED, xboxController::getLeftY));
 
-    xboxController
-        .rightStick()
-        .whileTrue((new WristHandler(m_wrist, BASE.SETPOINT.INTAKING_LOW_CUBE, xboxController::getLeftY)));
+    // xboxController
+    //     .rightStick()
+    //     .whileTrue((new WristHandler(m_wrist, BASE.SETPOINT.INTAKING_LOW_CUBE, xboxController::getLeftY)));
   }
 
   public void disableInit() {
     m_swerveDrive.setNeutral(NeutralMode.Coast);
-    m_wrist.setNeutralMode(IdleMode.kCoast);
+    //m_wrist.setNeutralMode(IdleMode.kCoast);
   }
 
   public void teleopInit() {
     m_swerveDrive.setNeutral(NeutralMode.Brake);
-    m_wrist.setNeutralMode(IdleMode.kBrake);
+    //m_wrist.setNeutralMode(IdleMode.kBrake);
   }
 
   public void autonomousInit() {
     m_swerveDrive.setNeutral(NeutralMode.Brake);
-    m_wrist.setNeutralMode(IdleMode.kBrake);
+    //m_wrist.setNeutralMode(IdleMode.kBrake);
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -167,14 +167,14 @@ public class RobotContainer {
   }
 
   public void initializeAutoChooser() {
-    m_autoChooser.addOption(
-        "CenterTwoBalance",
-        new CenterTwoBalance(
-            "CenterTwoBalance", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
+    // m_autoChooser.addOption(
+    //     "CenterTwoBalance",
+    //     new CenterTwoBalance(
+    //         "CenterTwoBalance", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
 
-    m_autoChooser.addOption(
-        "BumpThree",
-        new BumpThree("BumpThree", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
+    // m_autoChooser.addOption(
+    //     "BumpDrive",
+    //     new BumpThree("BumpDrive", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
 
     m_autoChooser.addOption(
         "DriveForward",
@@ -191,9 +191,9 @@ public class RobotContainer {
     // Absolute definition of jank right here. Please change this before Beach Blitz
     // :nate:
     // TODO: Fix
-    if (!(xboxController.leftTrigger().getAsBoolean() || xboxController.y().getAsBoolean() || xboxController.b().getAsBoolean() || xboxController.a().getAsBoolean() || xboxController.povDown().getAsBoolean()) && xboxController.getLeftY() > 0.1)  {
-      WristHandler wristHandler = new WristHandler(m_wrist, null, xboxController::getLeftY);
-      wristHandler.schedule();
-    }
+    // if (!(xboxController.leftTrigger().getAsBoolean() || xboxController.y().getAsBoolean() || xboxController.b().getAsBoolean() || xboxController.a().getAsBoolean() || xboxController.povDown().getAsBoolean()) && xboxController.getLeftY() > 0.1)  {
+    //   WristHandler wristHandler = new WristHandler(m_wrist, null, xboxController::getLeftY);
+    //   wristHandler.schedule();
+    // }
   }
 }

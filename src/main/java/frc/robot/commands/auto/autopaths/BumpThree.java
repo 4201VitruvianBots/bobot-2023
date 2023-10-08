@@ -53,14 +53,7 @@ public class BumpThree extends SequentialCommandGroup {
         new ParallelCommandGroup(
             new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.NONE, KICKER_SPEED.NONE),
             new AutoWristSetpoint(wrist, SETPOINT.STOWED)).withTimeout(0.25),
-            new ParallelCommandGroup(
-                swerveCommands.get(0),
-                new SequentialCommandGroup(
-                    new WaitCommand(2),
-                    new ParallelCommandGroup(
-                        new AutoWristSetpoint(wrist, SETPOINT.INTAKING_LOW_CUBE).withTimeout(0.25),
-                        new AutoRunIntakeMotors(
-                            intakeShooter, FLYWHEEL_SPEED.INTAKE, KICKER_SPEED.INTAKE).withTimeout(0.25)))).withTimeout(trajectories.get(0).getTotalTimeSeconds()),
+                swerveCommands.get(0).withTimeout(trajectories.get(0).getTotalTimeSeconds()),
         //     new ParallelCommandGroup(
         //         swerveCommands.get(1),
         //         new AutoWristSetpoint(wrist, SETPOINT.STOWED),
