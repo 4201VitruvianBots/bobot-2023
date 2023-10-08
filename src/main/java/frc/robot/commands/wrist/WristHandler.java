@@ -7,20 +7,26 @@ package frc.robot.commands.wrist;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.BASE.CONTROL_MODE;
 import frc.robot.constants.BASE.SETPOINT;
+import frc.robot.constants.BASE.XBOX_BUTTON;
 import frc.robot.subsystems.Wrist;
 
 public class WristHandler extends CommandBase {
   private Wrist m_wrist;
   private SETPOINT m_desiredState;
   private DoubleSupplier m_joystickY;
+  private XBOX_BUTTON m_buttonPressed;
 
-  public WristHandler(Wrist wrist, SETPOINT desiredState, DoubleSupplier joystickY) {
+  public WristHandler(Wrist wrist, SETPOINT desiredState, DoubleSupplier joystickY, XBOX_BUTTON buttonPressed) {
     m_wrist = wrist;
     m_desiredState = desiredState;
     m_joystickY = joystickY;
+    m_buttonPressed = buttonPressed;
 
     addRequirements(m_wrist);
   }
@@ -28,6 +34,9 @@ public class WristHandler extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    DataLog log = DataLogManager.getLog();
+    StringLogEntry buttonEntry = new StringLogEntry(log, "/wrist/button");
+    buttonEntry.append(m_buttonPressed.name());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

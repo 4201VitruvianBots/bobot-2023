@@ -30,6 +30,7 @@ import frc.robot.commands.wrist.WristHandler;
 import frc.robot.commands.wrist.ZeroWristEncoder;
 import frc.robot.constants.BASE;
 import frc.robot.constants.BASE.SETPOINT;
+import frc.robot.constants.BASE.XBOX_BUTTON;
 import frc.robot.constants.INTAKE;
 import frc.robot.constants.USB;
 import frc.robot.simulation.FieldSim;
@@ -111,7 +112,7 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             new RunIntake(m_intakeShooter)
-                .alongWith(new WristHandler(m_wrist, SETPOINT.INTAKING_LOW_CUBE, xboxController::getLeftY)));
+                .alongWith(new WristHandler(m_wrist, SETPOINT.INTAKING_LOW_CUBE, xboxController::getLeftY, XBOX_BUTTON.leftTrigger)));
 
     xboxController.x().whileTrue(new RunKickerOut(m_intakeShooter));
 
@@ -121,25 +122,25 @@ public class RobotContainer {
         .y()
         .whileTrue(
             new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.HIGH)
-                .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_HIGH_CUBE, xboxController::getLeftY)));
+                .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_HIGH_CUBE, xboxController::getLeftY, XBOX_BUTTON.Y)));
 
     xboxController
         .b()
         .whileTrue(
             new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.MEDIUM)
-                .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_MID_CUBE, xboxController::getLeftY)));
+                .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_MID_CUBE, xboxController::getLeftY, XBOX_BUTTON.B)));
 
     xboxController
         .a()
         .whileTrue(
             new RunFlywheel(m_intakeShooter, INTAKE.FLYWHEEL_SPEED.LOW)
-                .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_LOW_REVERSE, xboxController::getLeftY)));
+                .alongWith(new WristHandler(m_wrist, SETPOINT.SCORE_LOW_REVERSE, xboxController::getLeftY, XBOX_BUTTON.A)));
 
-    xboxController.povDown().whileTrue(new WristHandler(m_wrist, SETPOINT.STOWED, xboxController::getLeftY));
+    xboxController.povDown().whileTrue(new WristHandler(m_wrist, SETPOINT.STOWED, xboxController::getLeftY, XBOX_BUTTON.povDown));
 
     xboxController
         .rightStick()
-        .whileTrue((new WristHandler(m_wrist, BASE.SETPOINT.INTAKING_LOW_CUBE, xboxController::getLeftY)));
+        .whileTrue((new WristHandler(m_wrist, BASE.SETPOINT.INTAKING_LOW_CUBE, xboxController::getLeftY, XBOX_BUTTON.rightJoystick)));
   }
 
   public void disableInit() {
@@ -193,7 +194,7 @@ public class RobotContainer {
     // :nate:
     // TODO: Fix
     if (!(xboxController.leftTrigger().getAsBoolean() || xboxController.y().getAsBoolean() || xboxController.b().getAsBoolean() || xboxController.a().getAsBoolean() || xboxController.povDown().getAsBoolean()) && xboxController.getLeftY() > 0.1)  {
-      WristHandler wristHandler = new WristHandler(m_wrist, null, xboxController::getLeftY);
+      WristHandler wristHandler = new WristHandler(m_wrist, null, xboxController::getLeftY, XBOX_BUTTON.leftJoystick);
       wristHandler.schedule();
     }
   }
