@@ -48,23 +48,4 @@ public class BASE {
       return value;
     }
   }
-
-  public enum XBOX_BUTTON {
-    A,
-    B,
-    X,
-    Y,
-    leftTrigger,
-    rightTrigger,
-    leftBumper,
-    rightBumper,
-    start,
-    select,
-    leftJoystick,
-    rightJoystick,
-    povUp,
-    povDown,
-    povLeft,
-    povRight
-  }
 }

@@ -11,9 +11,6 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -42,9 +39,6 @@ public class Wrist extends SubsystemBase {
     m_encoderPositionPub,
     m_desiredAnglePub;
   private StringPublisher m_controlModePub;
-
-  private DataLog m_log = DataLogManager.getLog();
-  private DoubleLogEntry m_logEncoderPosition = new DoubleLogEntry(m_log, "/wrist/position");
 
   public Wrist() {
     m_wristMotor.setInverted(false);
@@ -120,8 +114,6 @@ public class Wrist extends SubsystemBase {
       m_percentOutputPub.set(m_wristMotor.get());
       m_voltagePub.set(m_wristMotor.getAppliedOutput());
     }
-
-    m_logEncoderPosition.append(m_wristMotor.getEncoder().getPosition());
   }
 
   @Override
