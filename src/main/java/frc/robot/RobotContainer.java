@@ -177,10 +177,9 @@ public class RobotContainer {
         "BumpThree",
         new BumpThree("BumpThree", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
 
-    // m_autoChooser.addOption(
-    //     "DriveForward",
-    //     new DriveForward("DriveForward", m_swerveDrive, m_fieldSim, m_wrist, m_intakeShooter));
-    // ;
+    m_autoChooser.addOption(
+        "DriveForward",
+        new DriveForward("DriveForward", m_swerveDrive, m_fieldSim));
 
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
