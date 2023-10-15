@@ -20,8 +20,8 @@ public class DriveForward extends SequentialCommandGroup {
       SwerveDrive swerveDrive,
       FieldSim fieldSim) {
 
-    double maxVel = Units.feetToMeters(8);
-    double maxAccel = Units.feetToMeters(8);
+    double maxVel = Units.feetToMeters(6);
+    double maxAccel = Units.feetToMeters(6);
     if (RobotBase.isSimulation()) {
       maxVel = Units.feetToMeters(4);
       maxAccel = Units.feetToMeters(4);
