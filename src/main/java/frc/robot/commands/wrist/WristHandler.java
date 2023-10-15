@@ -4,33 +4,44 @@
 
 package frc.robot.commands.wrist;
 
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.BASE.CONTROL_MODE;
 import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.subsystems.Wrist;
 
 public class WristHandler extends CommandBase {
-  private Wrist m_Wrist;
+  private Wrist m_wrist;
   private SETPOINT m_desiredState;
+  private DoubleSupplier m_joystickY;
 
-  public WristHandler(Wrist wrist, SETPOINT desiredState) {
-    m_Wrist = wrist;
+  public WristHandler(Wrist wrist, SETPOINT desiredState, DoubleSupplier joystickY) {
+    m_wrist = wrist;
     m_desiredState = desiredState;
+    m_joystickY = joystickY;
 
-    addRequirements(m_Wrist);
+    addRequirements(m_wrist);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_Wrist.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
-    m_Wrist.setUserSetpoint(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Wrist.SetWristDesiredSetpoint(m_desiredState);
+    if (m_desiredState != null) {
+      m_wrist.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
+      m_wrist.setUserSetpoint(true);
+      m_wrist.SetWristDesiredSetpoint(m_desiredState);
+    } else {
+      m_wrist.setClosedLoopControlMode(CONTROL_MODE.OPEN_LOOP);
+      m_wrist.setUserSetpoint(false);
+      m_wrist.setUserInput(MathUtil.applyDeadband(m_joystickY.getAsDouble(), 0.05));
+    }
   }
 
   // Called once the command ends or is interrupted.

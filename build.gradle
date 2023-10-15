@@ -121,15 +121,15 @@ tasks.withType(JavaCompile) {
 }
 
 // Create build constants file during build
-project.compileJava.dependsOn(createVersionFile)
-gversion {
-    srcDir       = "src/main/java/"
-    classPackage = "frc.robot"
-    className    = "BuildConstants"
-    dateFormat   = "yyyy-MM-dd HH:mm:ss z"
-    timeZone     = "America/Los_Angeles" // Use preferred time zone
-    indent       = "  "
-}
+// project.compileJava.dependsOn(createVersionFile)
+// gversion {
+//     srcDir       = "src/main/java/"
+//     classPackage = "frc.robot"
+//     className    = "BuildConstants"
+//     dateFormat   = "yyyy-MM-dd HH:mm:ss z"
+//     timeZone     = "America/Los_Angeles" // Use preferred time zone
+//     indent       = "  "
+// }
 
 apply plugin: 'com.diffplug.spotless'
 

@@ -2,19 +2,21 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.intake;
+package frc.robot.commands.flywheel;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.INTAKE.FLYWHEEL_SPEED;
 import frc.robot.subsystems.IntakeShooter;
 
-public class RunIntake extends CommandBase {
+public class RunFlywheel extends CommandBase {
 
   IntakeShooter m_intakeShooter;
-  /** Creates a new RunIntake. */
-  public RunIntake(IntakeShooter intakeShooter) {
-    m_intakeShooter = intakeShooter;
+  FLYWHEEL_SPEED m_speed;
 
-    addRequirements(m_intakeShooter);
+  /** Creates a new RunIntake. */
+  public RunFlywheel(IntakeShooter intakeShooter, FLYWHEEL_SPEED speed) {
+    m_intakeShooter = intakeShooter;
+    m_speed = speed;
   }
 
   // Called when the command is initially scheduled.
@@ -24,15 +26,13 @@ public class RunIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intakeShooter.setKickerPercentOutput(-0.5);
-    m_intakeShooter.setFlywheelPercentOutput(0.25);
+    m_intakeShooter.setFlywheelPercentOutput(m_speed.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
 
-    m_intakeShooter.setKickerPercentOutput(0);
     m_intakeShooter.setFlywheelPercentOutput(0);
   }
 

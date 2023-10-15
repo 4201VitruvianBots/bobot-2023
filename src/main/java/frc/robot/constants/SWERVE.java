@@ -1,8 +1,5 @@
 package frc.robot.constants;
 
-import static frc.robot.constants.BASE.CONSTANTS.kCANCoderSensorUnitsPerRotation;
-import static frc.robot.constants.BASE.CONSTANTS.kFalconSensorUnitsPerRotation;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -15,6 +12,7 @@ public final class SWERVE {
 
   public static final class DRIVE {
     public static final double kTrackWidth = Units.inchesToMeters(24);
+
     public static final double kWheelBase = Units.inchesToMeters(24);
 
     public static final Map<MODULE_POSITION, Translation2d> kModuleTranslations =
@@ -32,10 +30,10 @@ public final class SWERVE {
         new SwerveDriveKinematics(
             ModuleMap.orderedValues(kModuleTranslations, new Translation2d[0]));
 
-    public static double frontLeftCANCoderOffset = 125.068;
-    public static double frontRightCANCoderOffset = 62.051;
-    public static double backLeftCANCoderOffset = 190.635;
-    public static double backRightCANCoderOffset = 31.904;
+    public static double frontLeftCANCoderOffset = 275.889;
+    public static double frontRightCANCoderOffset = 173.408;
+    public static double backLeftCANCoderOffset = 261.475;
+    public static double backRightCANCoderOffset = 197.314;
 
     public static double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
     public static final double kLimitedSpeedMetersPerSecond = kMaxSpeedMetersPerSecond / 5;
@@ -62,6 +60,12 @@ public final class SWERVE {
 
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(1);
     public static final DCMotor kTurnGearbox = DCMotor.getFalcon500(1);
+    public static final double kDriveMotorDistancePerPulse =
+        (kWheelDiameterMeters * Math.PI) / (2048 * kDriveMotorGearRatio);
+
+    public static final double kTurningMotorDistancePerPulse =
+        360.0 / (2048 * kTurningMotorGearRatio);
+    public static final double kTurnEncoderDistancePerPulse = 360.0 / 4096;
 
     public static final double ksDriveVoltSecondsPerMeter = 0.605 / 12;
     public static final double kvDriveVoltSecondsSquaredPerMeter = 1.72 / 12;

@@ -4,14 +4,14 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.constants.SWERVE.DRIVE.kMaxSpeedMetersPerSecond;
 import static frc.robot.utils.ModuleMap.MODULE_POSITION;
 
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.sim.Pigeon2SimState;
-import com.ctre.phoenix6.unmanaged.Unmanaged;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.unmanaged.Unmanaged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
 import frc.robot.constants.SWERVE.DRIVE;
 import frc.robot.utils.ModuleMap;
+import frc.robot.utils.ModuleMap.MODULE_POSITION;
 import java.util.HashMap;
 import java.util.Map;
 import org.littletonrobotics.junction.Logger;
@@ -47,34 +48,34 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
                       MODULE_POSITION.FRONT_LEFT,
                       new TalonFX(CAN.frontLeftTurnMotor),
                       new TalonFX(CAN.frontLeftDriveMotor),
-                      new CANcoder(CAN.frontLeftCanCoder),
+                      new CANCoder(CAN.frontLeftCanCoder),
                       DRIVE.frontLeftCANCoderOffset),
               MODULE_POSITION.FRONT_RIGHT,
                   new SwerveModule(
                       MODULE_POSITION.FRONT_RIGHT,
                       new TalonFX(CAN.frontRightTurnMotor),
                       new TalonFX(CAN.frontRightDriveMotor),
-                      new CANcoder(CAN.frontRightCanCoder),
+                      new CANCoder(CAN.frontRightCanCoder),
                       DRIVE.frontRightCANCoderOffset),
               MODULE_POSITION.BACK_LEFT,
                   new SwerveModule(
                       MODULE_POSITION.BACK_LEFT,
                       new TalonFX(CAN.backLeftTurnMotor),
                       new TalonFX(CAN.backLeftDriveMotor),
-                      new CANcoder(CAN.backLeftCanCoder),
+                      new CANCoder(CAN.backLeftCanCoder),
                       DRIVE.backLeftCANCoderOffset),
               MODULE_POSITION.BACK_RIGHT,
                   new SwerveModule(
                       MODULE_POSITION.BACK_RIGHT,
                       new TalonFX(CAN.backRightTurnMotor),
                       new TalonFX(CAN.backRightDriveMotor),
-                      new CANcoder(CAN.backRightCanCoder),
+                      new CANCoder(CAN.backRightCanCoder),
                       DRIVE.backRightCANCoderOffset)));
 
   private final Pigeon2 m_pigeon = new Pigeon2(CAN.pigeon, "rio");
-  private Pigeon2SimState m_pigeonSim;
 
   private double m_rollOffset;
+  private double m_pitchOffset;
 
   private boolean m_limitJoystickInput = false;
 
@@ -100,12 +101,12 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   private double m_rotationOutput;
 
   ChassisSpeeds chassisSpeeds;
-  private final double m_maxVelocity = DRIVE.kMaxSpeedMetersPerSecond;
+  private final double m_maxVelocity = kMaxSpeedMetersPerSecond;
   private final double m_limitedVelocity = DRIVE.kLimitedSpeedMetersPerSecond;
   private double m_currentMaxVelocity = m_maxVelocity;
 
   public SwerveDrive() {
-    m_pigeon.getConfigurator().apply(new Pigeon2Configuration());
+    m_pigeon.configFactoryDefault();
     m_pigeon.setYaw(0);
     m_odometry =
         new SwerveDrivePoseEstimator(
@@ -119,12 +120,9 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     if (RobotBase.isReal()) {
       Timer.delay(1);
       resetModulesToAbsolute();
-    } else {
-      m_pigeonSim = m_pigeon.getSimState();
     }
 
     initSmartDashboard();
-    setNeutral();
   }
 
   private void resetModulesToAbsolute() {
@@ -213,7 +211,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
 
   public void setOdometry(Pose2d pose) {
     if (RobotBase.isSimulation()) {
-      m_pigeon.getSimState().setRawYaw(pose.getRotation().getDegrees());
+      // m_pigeon.getSimState().setRawYaw(pose.getRotation().getDegrees());
     } else m_pigeon.setYaw(pose.getRotation().getDegrees());
     m_odometry.resetPosition(getHeadingRotation2d(), getSwerveDriveModulePositionsArray(), pose);
 
@@ -227,23 +225,31 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
   }
 
   public void setRollOffset() {
-    m_rollOffset = -m_pigeon.getRoll().getValue(); // -2.63
+    m_rollOffset = -m_pigeon.getRoll(); // -2.63
+  }
+
+  public void setPitchOffset() {
+    m_pitchOffset = -m_pigeon.getPitch(); // -2.63
   }
 
   public double getRollOffsetDegrees() {
     return m_rollOffset;
   }
 
+  public double getPitchOffsetDegrees() {
+    return m_pitchOffset;
+  }
+
   public double getPitchDegrees() {
-    return m_pigeon.getPitch().getValue();
+    return m_pigeon.getPitch();
   }
 
   public double getRollDegrees() {
-    return m_pigeon.getRoll().getValue();
+    return m_pigeon.getRoll();
   }
 
   public double getHeadingDegrees() {
-    return m_pigeon.getYaw().getValue();
+    return m_pigeon.getYaw();
   }
 
   public Rotation2d getHeadingRotation2d() {
@@ -312,15 +318,15 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     return m_turnController;
   }
 
-  public void setNeutral() {
+  public void setNeutral(NeutralMode mode) {
     for (SwerveModule module : m_swerveModules.values()) {
-      module.setTurnNeutral();
+      module.setTurnNeutralMode(mode);
     }
   }
 
   public void setBrake() {
     for (SwerveModule module : m_swerveModules.values()) {
-      module.setTurnBrake();
+      module.setTurnNeutralMode(NeutralMode.Brake);
     }
   }
 
@@ -388,7 +394,7 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     m_simYaw += chassisSpeed.omegaRadiansPerSecond * dt;
 
     Unmanaged.feedEnable(20);
-    m_pigeonSim.setRawYaw(-Units.radiansToDegrees(m_simYaw));
+    // m_pigeonSim.setRawYaw(-Units.radiansToDegrees(m_simYaw));
   }
 
   @Override
