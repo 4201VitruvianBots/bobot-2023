@@ -42,13 +42,13 @@ public class TestCtreUtils implements AutoCloseable {
     var testMotorSim = m_testMotor.getSimState();
 
     var testConfig = CtreUtils.generateTurnMotorConfig();
-    testConfig.Feedback.SensorToMechanismRatio = MODULE.kTurningMotorGearRatio;
+    testConfig.Feedback.SensorToMechanismRatio = MODULE.kTurnMotorGearRatio;
     m_testMotor.getConfigurator().apply(testConfig);
 
     testMotorSim.setRawRotorPosition(-1);
     m_testMotor.getPosition().waitForUpdate(WAIT_TIME);
 
-    var expectedRotation = 1.0 / MODULE.kTurningMotorGearRatio;
+    var expectedRotation = 1.0 / MODULE.kTurnMotorGearRatio;
     var testPosition = m_testMotor.getPosition().getValue();
 
     assertEquals(expectedRotation, testPosition, DELTA);
@@ -56,7 +56,7 @@ public class TestCtreUtils implements AutoCloseable {
     testMotorSim.setRawRotorPosition(1);
     m_testMotor.getPosition().waitForUpdate(WAIT_TIME);
 
-    expectedRotation = -1.0 / MODULE.kTurningMotorGearRatio;
+    expectedRotation = -1.0 / MODULE.kTurnMotorGearRatio;
     testPosition = m_testMotor.getPosition().getValue();
 
     assertEquals(expectedRotation, testPosition, DELTA);

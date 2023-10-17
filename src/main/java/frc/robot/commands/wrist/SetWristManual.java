@@ -30,7 +30,7 @@ public class SetWristManual extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_wrist.set
+//    m_wrist.set
   }
 
   // Called once the command ends or is interrupted.

@@ -54,7 +54,7 @@ public final class SWERVE {
 
   public static class MODULE {
     public static final double kDriveMotorGearRatio = 6.12;
-    public static final double kTurningMotorGearRatio = 150.0 / 7.0;
+    public static final double kTurnMotorGearRatio = 150.0 / 7.0;
     public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
 
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(1);

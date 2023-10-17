@@ -1,5 +1,9 @@
 package frc.robot.utils;
 
+import org.littletonrobotics.conduit.ConduitApi;
+import org.littletonrobotics.junction.inputs.LoggedDriverStation;
+import org.littletonrobotics.junction.inputs.LoggedSystemStats;
+
 import java.lang.reflect.Field;
 
 public class TestUtils {
@@ -24,5 +28,11 @@ public class TestUtils {
           "Could not get field '" + fieldName + "' in Object '" + instance.toString() + "'");
       return null;
     }
+  }
+
+  public static void refreshAkitData() {
+    ConduitApi.getInstance().captureData();
+    LoggedDriverStation.getInstance().periodic();
+    LoggedSystemStats.getInstance().periodic();
   }
 }

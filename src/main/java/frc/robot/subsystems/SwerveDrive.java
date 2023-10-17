@@ -379,6 +379,12 @@ public class SwerveDrive extends SubsystemBase implements AutoCloseable {
     updateLog();
   }
 
+  public void simulationInit() {
+    for (var module : ModuleMap.orderedValuesList(m_swerveModules)) {
+      module.simulationInit();
+    }
+  }
+
   @Override
   public void simulationPeriodic() {
     ChassisSpeeds chassisSpeed =

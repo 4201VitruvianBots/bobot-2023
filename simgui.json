@@ -1,4 +1,28 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "Falcon 500[20]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Falcon 500[21]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Falcon 500[22]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Falcon 500[23]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",

@@ -137,7 +137,11 @@ public class RobotContainer {
     // Absolute definition of jank right here. Please change this before Beach Blitz
     // :nate:
     if (Math.abs((MathUtil.applyDeadband(xboxController.getLeftX(), 0.05))) > 0) {
-      RunCommand(new SetWristManual(m_wrist, xboxController::getLeftX()));
+//      RunCommand(new SetWristManual(m_wrist, xboxController::getLeftX()));
     }
+  }
+
+  public void simulationInit() {
+    m_swerveDrive.simulationInit();
   }
 }
