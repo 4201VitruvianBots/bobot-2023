@@ -80,6 +80,8 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 //          MODULE.kDriveGearbox, MODULE.kDriveMotorGearRatio, 0.2);
 
   private DCMotorSim m_turnMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), MODULE.kTurnMotorGearRatio, 0.5);
+//  private FlywheelSim m_driveMotorSim = new FlywheelSim(LinearSystemId.identifyVelocitySystem(0.134648227, 0.002802309),
+//          MODULE.kDriveGearbox, MODULE.kDriveMotorGearRatio);
   private MotorSim m_driveMotorSim;
 
   private double m_lastTime;
@@ -196,7 +198,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 
   public void resetAngle(double angle) {
       //  double newAngle = getHeadingDegrees() - m_angleOffset + angle;
-    m_turnMotor.setPosition(m_angleEncoder.getAbsolutePosition().getValue());
+    m_turnMotor.setPosition(angle / 360.0);
   }
 
   public double getHeadingDegrees() {

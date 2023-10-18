@@ -32,6 +32,7 @@ public class SubstationThree extends SequentialCommandGroup {
             swerveDrive, m_trajectories.get(0).getInitialHolonomicPose(), fieldSim),
         new PlotAutoTrajectory(fieldSim, pathName, m_trajectories),
 
+        new WaitCommand(1),
         /** Runs Path with Intaking cube during */
         swerveCommands.get(0),
         new WaitCommand(0.2),
