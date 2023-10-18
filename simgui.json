@@ -1,17 +1,7 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "Falcon 500[20]": {
-        "header": {
-          "open": true
-        }
-      },
       "Falcon 500[21]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Falcon 500[22]": {
         "header": {
           "open": true
         }
@@ -55,6 +45,11 @@
     },
     "windows": {
       "/SmartDashboard/Field2d": {
+        "trajectory": {
+          "arrowSize": 5,
+          "arrows": false,
+          "style": "Line"
+        },
         "window": {
           "visible": true
         }

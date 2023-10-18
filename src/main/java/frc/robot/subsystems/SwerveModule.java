@@ -80,15 +80,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
 //          MODULE.kDriveGearbox, MODULE.kDriveMotorGearRatio, 0.2);
 
   private DCMotorSim m_turnMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), MODULE.kTurnMotorGearRatio, 0.5);
-//  private LinearSystemSim<N1, N1, N1> m_driveMotorSim = new LinearSystemSim<>(LinearSystemId.identifyVelocitySystem(
-//          2.46330,
-//          0.12872
-//  ));
-
-//  private MotorSim m_turnMotorSim;
   private MotorSim m_driveMotorSim;
-  private double m_turnSimDistance;
-  private double m_driveSimDistance;
 
   private double m_lastTime;
 
@@ -303,8 +295,6 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     moduleLigament.setLength(
             ((getVelocityMetersPerSecond() / SWERVE.DRIVE.kMaxSpeedMetersPerSecond) * .75) + .25);
     moduleLigament.setAngle(getHeadingDegrees());
-
-    System.out.println("Speed: " + getVelocityMetersPerSecond() + "\tPosition: " + getDriveMeters());
   }
 
   public void simulationInit() {

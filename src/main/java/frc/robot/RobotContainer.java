@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.autos.SubstationThree;
 import frc.robot.commands.flywheel.RunFlywheel;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.kicker.RunKickerIn;
@@ -70,7 +71,7 @@ public class RobotContainer {
               m_swerveDrive,
               () -> -leftJoystick.getRawAxis(1),
               () -> -leftJoystick.getRawAxis(0),
-              () -> -leftJoystick.getRawAxis(2)));
+              () -> 0));
     }
   }
   /**
@@ -128,7 +129,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return new WaitCommand(0);
+    return new SubstationThree("SubstationTwoPickup", m_swerveDrive, m_fieldSim);
   }
 
   public void periodic() {
