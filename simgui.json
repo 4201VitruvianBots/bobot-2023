@@ -36,7 +36,9 @@
       "/LiveWindow/Ungrouped/Talon FX (Pro) [30]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX (Pro) [31]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX (Pro) [32]": "Motor Controller",
+      "/SmartDashboard/AutoChooser": "String Chooser",
       "/SmartDashboard/Field2d": "Field2d",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/SwerveDrive": "Subsystem",
       "/SmartDashboard/SwerveModule2D_0": "Mechanism2d",
       "/SmartDashboard/SwerveModule2D_1": "Mechanism2d",
@@ -44,6 +46,11 @@
       "/SmartDashboard/SwerveModule2D_3": "Mechanism2d"
     },
     "windows": {
+      "/SmartDashboard/AutoChooser": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field2d": {
         "trajectory": {
           "arrowSize": 5,

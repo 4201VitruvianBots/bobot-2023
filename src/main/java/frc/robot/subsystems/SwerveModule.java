@@ -18,9 +18,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -37,10 +35,7 @@ import frc.robot.constants.SWERVE.MODULE;
 import frc.robot.simulation.MotorSim;
 import frc.robot.utils.CtreUtils;
 import frc.robot.utils.ModuleMap;
-import org.littletonrobotics.conduit.ConduitApi;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedDriverStation;
-import org.littletonrobotics.junction.inputs.LoggedSystemStats;
 
 public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private final ModuleMap.MODULE_POSITION m_modulePosition;
@@ -71,17 +66,19 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   private TalonFXSimState m_driveMotorSimState;
   private CANcoderSimState m_angleEncoderSimState;
 
-//  private DCMotorSim m_turnMotorModel =
-//      new DCMotorSim(MODULE.kTurnGearbox, MODULE.kTurnMotorGearRatio, .001);
-//
-//  private DCMotorSim m_driveMotorModel =
-//      new DCMotorSim(
-//          // Sim Values
-//          MODULE.kDriveGearbox, MODULE.kDriveMotorGearRatio, 0.2);
+  //  private DCMotorSim m_turnMotorModel =
+  //      new DCMotorSim(MODULE.kTurnGearbox, MODULE.kTurnMotorGearRatio, .001);
+  //
+  //  private DCMotorSim m_driveMotorModel =
+  //      new DCMotorSim(
+  //          // Sim Values
+  //          MODULE.kDriveGearbox, MODULE.kDriveMotorGearRatio, 0.2);
 
-  private DCMotorSim m_turnMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), MODULE.kTurnMotorGearRatio, 0.5);
-//  private FlywheelSim m_driveMotorSim = new FlywheelSim(LinearSystemId.identifyVelocitySystem(0.134648227, 0.002802309),
-//          MODULE.kDriveGearbox, MODULE.kDriveMotorGearRatio);
+  private DCMotorSim m_turnMotorSim =
+      new DCMotorSim(DCMotor.getFalcon500(1), MODULE.kTurnMotorGearRatio, 0.5);
+  //  private FlywheelSim m_driveMotorSim = new
+  // FlywheelSim(LinearSystemId.identifyVelocitySystem(0.134648227, 0.002802309),
+  //          MODULE.kDriveGearbox, MODULE.kDriveMotorGearRatio);
   private MotorSim m_driveMotorSim;
 
   private double m_lastTime;
@@ -122,29 +119,29 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
       m_driveMotorSimState = m_driveMotor.getSimState();
       m_angleEncoderSimState = m_angleEncoder.getSimState();
 
-//      m_turnMotorSim = MotorSim.createSimpleMotor(
-//              m_turnMotor.getDeviceID(),
-//              "Falcon 500",
-//              0,
-//              0.135872794,
-//              0.002802309,
-//              0,
-//              0,
-//              DCMotor.getFalcon500(1)
-//      );
-//
-      m_driveMotorSim = MotorSim.createSimpleMotor(
+      //      m_turnMotorSim = MotorSim.createSimpleMotor(
+      //              m_turnMotor.getDeviceID(),
+      //              "Falcon 500",
+      //              0,
+      //              0.135872794,
+      //              0.002802309,
+      //              0,
+      //              0,
+      //              DCMotor.getFalcon500(1)
+      //      );
+      //
+      m_driveMotorSim =
+          MotorSim.createSimpleMotor(
               m_driveMotor.getDeviceID(),
               "Falcon 500",
               0,
               0.134648227,
               0.002802309,
-//              2.46330,
-//          0.12872,
+              //              2.46330,
+              //          0.12872,
               0,
               0,
-              DCMotor.getFalcon500(1)
-      );
+              DCMotor.getFalcon500(1));
 
       angleOffset = 0;
     }
@@ -152,17 +149,16 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     initModuleHeading();
 
     moduleRoot =
-            moduleVisualizer.getRoot(
-                    "ModuleCenter_" + m_modulePosition.ordinal(),
-                    Units.inchesToMeters(3),
-                    Units.inchesToMeters(3));
+        moduleVisualizer.getRoot(
+            "ModuleCenter_" + m_modulePosition.ordinal(),
+            Units.inchesToMeters(3),
+            Units.inchesToMeters(3));
     moduleLigament =
-            moduleRoot.append(
-                    new MechanismLigament2d(
-                            "ModuleDirection_" + m_modulePosition.ordinal(),
-                            (getVelocityMetersPerSecond() / SWERVE.DRIVE.kMaxSpeedMetersPerSecond) * .75
-                                    + .25,
-                            getHeadingDegrees()));
+        moduleRoot.append(
+            new MechanismLigament2d(
+                "ModuleDirection_" + m_modulePosition.ordinal(),
+                (getVelocityMetersPerSecond() / SWERVE.DRIVE.kMaxSpeedMetersPerSecond) * .75 + .25,
+                getHeadingDegrees()));
 
     SmartDashboard.putData("SwerveModule2D_" + m_modulePosition.ordinal(), moduleVisualizer);
   }
@@ -179,7 +175,10 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     if (RobotBase.isReal()) {
       Timer.delay(0.1);
       m_initSuccess =
-          Math.abs(getHeadingDegrees() + m_angleOffset - m_angleEncoder.getAbsolutePosition().getValue())
+          Math.abs(
+                  getHeadingDegrees()
+                      + m_angleOffset
+                      - m_angleEncoder.getAbsolutePosition().getValue())
               < 1.0;
     } else m_initSuccess = true;
   }
@@ -197,12 +196,17 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   }
 
   public void resetAngle(double angle) {
-      //  double newAngle = getHeadingDegrees() - m_angleOffset + angle;
+    //  double newAngle = getHeadingDegrees() - m_angleOffset + angle;
     m_turnMotor.setPosition(angle / 360.0);
   }
 
   public double getHeadingDegrees() {
-    return 360 * m_turnMotor.getPosition().getValue();
+    //    m_turnMotor.getPosition().refresh();
+    //    m_turnMotor.getVelocity().refresh();
+    //    var position = BaseStatusSignal.getLatencyCompensatedValue(m_turnMotor.getPosition(),
+    // m_turnMotor.getVelocity());
+    //    return 360.0 * position;
+    return 360.0 * m_turnMotor.getPosition().getValue();
   }
 
   public Rotation2d getHeadingRotation2d() {
@@ -295,7 +299,7 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
     updateLog();
 
     moduleLigament.setLength(
-            ((getVelocityMetersPerSecond() / SWERVE.DRIVE.kMaxSpeedMetersPerSecond) * .75) + .25);
+        ((getVelocityMetersPerSecond() / SWERVE.DRIVE.kMaxSpeedMetersPerSecond) * .75) + .25);
     moduleLigament.setAngle(getHeadingDegrees());
   }
 
@@ -306,41 +310,39 @@ public class SwerveModule extends SubsystemBase implements AutoCloseable {
   @Override
   public void simulationPeriodic() {
     RoboRioSim.setVInVoltage(
-            BatterySim.calculateDefaultBatteryLoadedVoltage(
-                    m_turnMotorSim.getCurrentDrawAmps(), m_driveMotorSim.getCurrentDrawAmps()));
+        BatterySim.calculateDefaultBatteryLoadedVoltage(
+            m_turnMotorSim.getCurrentDrawAmps(), m_driveMotorSim.getCurrentDrawAmps()));
 
     m_turnMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
     m_driveMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-    ConduitApi.getInstance().captureData();
-    LoggedDriverStation.getInstance().periodic();
-    LoggedSystemStats.getInstance().periodic();
-
     m_turnMotorSim.setInputVoltage(MathUtil.clamp(m_turnMotorSimState.getMotorVoltage(), -12, 12));
     m_driveMotorSim.setInputVoltage(
-            MathUtil.clamp(m_driveMotorSimState.getMotorVoltage(), -12, 12));
+        MathUtil.clamp(m_driveMotorSimState.getMotorVoltage(), -12, 12));
 
     double currentTime = Timer.getFPGATimestamp();
     double dt = currentTime - m_lastTime;
     m_turnMotorSim.update(dt);
-//    m_driveMotorSim.update(dt);
+    //    m_driveMotorSim.update(dt);
     m_driveMotorSim.run();
 
-//    var turnVelocityRps = m_turnMotorSim.getAngularVelocityRPM() / 60.0;
-//    var turnDistance = turnVelocityRps * dt;
-//    var driveVelocityRps = m_driveMotorSim.getAngularVelocityRPM() * MODULE.kDriveMotorGearRatio / 60.0;
-//    var driveDistance = driveVelocityRps * dt;
-//
-//    m_turnMotorSimState.addRotorPosition(turnDistance * MODULE.kTurnMotorGearRatio);
-//    m_turnMotorSimState.setRotorVelocity(turnVelocityRps * MODULE.kTurnMotorGearRatio);
-//    m_angleEncoderSimState.addPosition(turnDistance);
-//    m_angleEncoderSimState.setVelocity(turnVelocityRps);
-//    m_driveMotorSimState.setRawRotorPosition(driveDistance);
-//    m_driveMotorSimState.setRotorVelocity(driveVelocityRps);
+    //    var turnVelocityRps = m_turnMotorSim.getAngularVelocityRPM() / 60.0;
+    //    var turnDistance = turnVelocityRps * dt;
+    //    var driveVelocityRps = m_driveMotorSim.getAngularVelocityRPM() *
+    // MODULE.kDriveMotorGearRatio / 60.0;
+    //    var driveDistance = driveVelocityRps * dt;
+    //
+    //    m_turnMotorSimState.addRotorPosition(turnDistance * MODULE.kTurnMotorGearRatio);
+    //    m_turnMotorSimState.setRotorVelocity(turnVelocityRps * MODULE.kTurnMotorGearRatio);
+    //    m_angleEncoderSimState.addPosition(turnDistance);
+    //    m_angleEncoderSimState.setVelocity(turnVelocityRps);
+    //    m_driveMotorSimState.setRawRotorPosition(driveDistance);
+    //    m_driveMotorSimState.setRotorVelocity(driveVelocityRps);
 
     var turnVelocityRps = m_turnMotorSim.getAngularVelocityRPM() / 60.0;
     var turnDistance = turnVelocityRps * dt;
-    var driveVelocityRps = m_driveMotorSim.getAngularVelocityRPM() * MODULE.kDriveMotorGearRatio / 60.0;
+    var driveVelocityRps =
+        m_driveMotorSim.getAngularVelocityRPM() * MODULE.kDriveMotorGearRatio / 60.0;
     var driveDistance = driveVelocityRps * dt;
 
     m_turnMotorSimState.addRotorPosition(turnDistance * MODULE.kTurnMotorGearRatio);

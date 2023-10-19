@@ -7,7 +7,6 @@ package frc.robot.commands.autos;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.simulation.FieldSim;
-
 import java.util.ArrayList;
 import java.util.List;
 

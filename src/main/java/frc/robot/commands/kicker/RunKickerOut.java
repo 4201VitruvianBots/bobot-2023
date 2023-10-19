@@ -34,7 +34,7 @@ public class RunKickerOut extends CommandBase {
     m_intakeShooter.setFlywheelPercentOutput(0);
   }
   // 236 (Bent's favorite team)
-  
+
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {

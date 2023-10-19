@@ -1,9 +1,6 @@
 package frc.robot.constants;
 
-import static frc.robot.constants.BASE.CONSTANTS.kFalconSensorUnitsPerRotation;
-
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 
 public final class INTAKE {
   public static final DCMotor gearBox = DCMotor.getNEO(2);
@@ -35,5 +32,4 @@ public final class INTAKE {
   public static final double kWristD = 0.0;
 
   public static final double kWristRadiansToEncoderUnits = 0.0;
-  
 }

@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,7 +16,8 @@ import frc.robot.constants.INTAKE;
 public class IntakeShooter extends SubsystemBase {
 
   private final CANSparkMax kickerMotor = new CANSparkMax(CAN.kickerMotor, MotorType.kBrushless);
-  private final CANSparkMax flywheelMotor = new CANSparkMax(CAN.flywheelMotor, MotorType.kBrushless);
+  private final CANSparkMax flywheelMotor =
+      new CANSparkMax(CAN.flywheelMotor, MotorType.kBrushless);
 
   private final CANSparkMax[] motors = {kickerMotor, flywheelMotor};
 
@@ -29,9 +29,10 @@ public class IntakeShooter extends SubsystemBase {
     }
 
     flywheelMotor.getPIDController().setP(INTAKE.kP);
-    
+
     // Shuffleboard setup
-    NetworkTable intakeNtTab = NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("IntakeShooter");
+    NetworkTable intakeNtTab =
+        NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("IntakeShooter");
 
     kickerOutputPub = intakeNtTab.getDoubleTopic("Kicker Output").publish();
     flywheelOutputPub = intakeNtTab.getDoubleTopic("Flywheel Output").publish();

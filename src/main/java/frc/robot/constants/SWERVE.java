@@ -40,16 +40,16 @@ public final class SWERVE {
     public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
     public static final double kLimitedRotationRadiansPerSecond = kMaxRotationRadiansPerSecond / 5;
 
-    public static final double kP_X = 0.6;
+    public static final double kP_X = 2.5;
     public static final double kI_X = 0;
     public static final double kD_X = 0;
-    public static final double kP_Y = 0.6;
+    public static final double kP_Y = 2.5;
     public static final double kI_Y = 0;
     public static final double kD_Y = 0;
 
-    public static double kP_Theta = 4.0;
+    public static double kP_Theta = -5.0;
     public static double kI_Theta = 0;
-    public static double kD_Theta = 0.01;
+    public static double kD_Theta = -0.5;
   }
 
   public static class MODULE {

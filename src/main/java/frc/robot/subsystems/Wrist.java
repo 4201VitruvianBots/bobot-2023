@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.BASE.CONTROL_MODE;
@@ -16,8 +15,9 @@ public class Wrist extends SubsystemBase {
   private final CANSparkMax m_wristMotor = new CANSparkMax(CAN.wristMotor, MotorType.kBrushless);
   private boolean m_userSetpoint;
 
-  private PIDController m_controller = new PIDController(INTAKE.kWristP, INTAKE.kWristI, INTAKE.kWristD);
-  
+  private PIDController m_controller =
+      new PIDController(INTAKE.kWristP, INTAKE.kWristI, INTAKE.kWristD);
+
   public void SetWristDesiredSetpoint(SETPOINT desiredSetpoint) {
     m_desiredSetpointRadians = desiredSetpoint.getWristSetpointRadians();
   }
@@ -42,8 +42,10 @@ public class Wrist extends SubsystemBase {
       case OPEN_LOOP:
 
       case CLOSED_LOOP:
-        setWristPercentOutput(m_controller.calculate(m_wristMotor.getEncoder().getPosition(), m_desiredSetpointRadians));
-        
+        setWristPercentOutput(
+            m_controller.calculate(
+                m_wristMotor.getEncoder().getPosition(), m_desiredSetpointRadians));
+
         break;
     }
   }

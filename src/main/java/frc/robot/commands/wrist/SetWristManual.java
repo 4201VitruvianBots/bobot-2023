@@ -11,6 +11,7 @@ import frc.robot.subsystems.Wrist;
 public class SetWristManual extends CommandBase {
   /** Creates a new SetWristManual. */
   Wrist m_wrist;
+
   double m_output;
 
   public SetWristManual(Wrist wrist, double output) {
@@ -30,7 +31,7 @@ public class SetWristManual extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-//    m_wrist.set
+    //    m_wrist.set
   }
 
   // Called once the command ends or is interrupted.

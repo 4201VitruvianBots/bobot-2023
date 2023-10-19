@@ -10,10 +10,7 @@ import frc.robot.subsystems.*;
 import frc.robot.utils.TrajectoryUtils;
 
 public class SubstationThree extends SequentialCommandGroup {
-  public SubstationThree(
-      String pathName,
-      SwerveDrive swerveDrive,
-      FieldSim fieldSim) {
+  public SubstationThree(String pathName, SwerveDrive swerveDrive, FieldSim fieldSim) {
 
     double maxVel = Units.feetToMeters(16);
     double maxAccel = Units.feetToMeters(16);
@@ -31,14 +28,12 @@ public class SubstationThree extends SequentialCommandGroup {
         new SetSwerveOdometry(
             swerveDrive, m_trajectories.get(0).getInitialHolonomicPose(), fieldSim),
         new PlotAutoTrajectory(fieldSim, pathName, m_trajectories),
-
         new WaitCommand(1),
         /** Runs Path with Intaking cube during */
         swerveCommands.get(0),
         new WaitCommand(0.2),
         swerveCommands.get(1),
         new WaitCommand(0.2),
-        swerveCommands.get(2)
-                .andThen(() -> swerveDrive.drive(0, 0, 0, false, false)));
+        swerveCommands.get(2).andThen(() -> swerveDrive.drive(0, 0, 0, false, false)));
   }
 }
