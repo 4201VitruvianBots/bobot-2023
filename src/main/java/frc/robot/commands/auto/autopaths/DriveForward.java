@@ -9,16 +9,11 @@ import frc.robot.commands.auto.PlotAutoTrajectory;
 import frc.robot.commands.swerve.SetSwerveNeutralMode;
 import frc.robot.commands.swerve.SetSwerveOdometry;
 import frc.robot.simulation.FieldSim;
-import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.SwerveDrive;
-import frc.robot.subsystems.Wrist;
 import frc.robot.utils.TrajectoryUtils;
 
 public class DriveForward extends SequentialCommandGroup {
-  public DriveForward(
-      String pathName,
-      SwerveDrive swerveDrive,
-      FieldSim fieldSim) {
+  public DriveForward(String pathName, SwerveDrive swerveDrive, FieldSim fieldSim) {
 
     double maxVel = Units.feetToMeters(6);
     double maxAccel = Units.feetToMeters(6);

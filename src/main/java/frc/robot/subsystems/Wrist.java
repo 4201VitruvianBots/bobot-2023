@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -12,7 +11,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.BASE;
 import frc.robot.constants.BASE.CONTROL_MODE;
@@ -28,23 +26,25 @@ public class Wrist extends SubsystemBase {
   private boolean m_userSetpoint;
   private double m_joystickInput;
 
-  private PIDController m_pidController = new PIDController(INTAKE.kWristP, INTAKE.kWristI, INTAKE.kWristD);
+  private PIDController m_pidController =
+      new PIDController(INTAKE.kWristP, INTAKE.kWristI, INTAKE.kWristD);
 
   private ArmFeedforward m_feedForward =
       new ArmFeedforward(INTAKE.kWristS, INTAKE.kWristG, INTAKE.kWristV, INTAKE.kWristA);
 
   private DoublePublisher m_percentOutputPub,
-    m_voltagePub,
-    m_angleDegreesPub,
-    m_encoderPositionPub,
-    m_desiredAnglePub;
+      m_voltagePub,
+      m_angleDegreesPub,
+      m_encoderPositionPub,
+      m_desiredAnglePub;
   private StringPublisher m_controlModePub;
 
   public Wrist() {
     m_wristMotor.setInverted(false);
     m_wristMotor.getEncoder().setPosition(0);
 
-    NetworkTable wristNtTab = NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Wrist");
+    NetworkTable wristNtTab =
+        NetworkTableInstance.getDefault().getTable("Shuffleboard").getSubTable("Wrist");
     m_percentOutputPub = wristNtTab.getDoubleTopic("Wrist Percent Output").publish();
     m_voltagePub = wristNtTab.getDoubleTopic("Wrist Output Voltage").publish();
     m_angleDegreesPub = wristNtTab.getDoubleTopic("Wrist Angle Degrees").publish();
@@ -64,6 +64,7 @@ public class Wrist extends SubsystemBase {
   public void setUserInput(double input) {
     m_joystickInput = input;
   }
+
   public void setNeutralMode(IdleMode mode) {
     m_wristMotor.setIdleMode(mode);
   }
@@ -134,7 +135,11 @@ public class Wrist extends SubsystemBase {
 
         // FRC 5712 logic
         double feedForward = m_feedForward.calculate(m_desiredSetpointRadians, 0);
-        double pid = m_pidController.calculate(getSensorPosition(), Units.radiansToDegrees(m_desiredSetpointRadians) / BASE.CONSTANTS.kNeoEncoderUnitsToDegrees);
+        double pid =
+            m_pidController.calculate(
+                getSensorPosition(),
+                Units.radiansToDegrees(m_desiredSetpointRadians)
+                    / BASE.CONSTANTS.kNeoEncoderUnitsToDegrees);
 
         double output = feedForward + pid;
 

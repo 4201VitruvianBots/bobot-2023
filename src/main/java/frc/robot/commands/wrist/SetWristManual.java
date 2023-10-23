@@ -4,12 +4,11 @@
 
 package frc.robot.commands.wrist;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.BASE.CONTROL_MODE;
 import frc.robot.subsystems.Wrist;
+import java.util.function.DoubleSupplier;
 
 public class SetWristManual extends CommandBase {
   /** Creates a new SetWristManual. */
@@ -26,8 +25,7 @@ public class SetWristManual extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -44,7 +42,6 @@ public class SetWristManual extends CommandBase {
       m_wrist.setClosedLoopControlMode(CONTROL_MODE.CLOSED_LOOP);
       m_wrist.setUserSetpoint(false);
     }
-
   }
 
   // Called once the command ends or is interrupted.
