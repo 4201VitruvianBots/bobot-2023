@@ -4,13 +4,12 @@
 
 package frc.robot.commands.wrist;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.BASE.CONTROL_MODE;
 import frc.robot.constants.BASE.SETPOINT;
 import frc.robot.subsystems.Wrist;
+import java.util.function.DoubleSupplier;
 
 public class WristHandler extends CommandBase {
   private Wrist m_wrist;
@@ -27,8 +26,7 @@ public class WristHandler extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

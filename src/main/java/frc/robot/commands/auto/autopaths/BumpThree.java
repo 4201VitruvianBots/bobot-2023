@@ -46,18 +46,22 @@ public class BumpThree extends SequentialCommandGroup {
         new SetSwerveOdometry(swerveDrive, trajectories.get(0).getInitialHolonomicPose(), fieldSim),
         new PlotAutoTrajectory(fieldSim, pathName, trajectories),
         new ParallelCommandGroup(
-            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.NONE),
-            new AutoWristSetpoint(wrist, SETPOINT.SCORE_HIGH_CUBE)).withTimeout(1),
+                new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.NONE),
+                new AutoWristSetpoint(wrist, SETPOINT.SCORE_HIGH_CUBE))
+            .withTimeout(1),
         new WaitCommand(1),
-        new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.SHOOT).withTimeout(0.5),
+        new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.SHOOT)
+            .withTimeout(0.5),
         new ParallelCommandGroup(
-            new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.NONE, KICKER_SPEED.NONE),
-            new AutoWristSetpoint(wrist, SETPOINT.STOWED)).withTimeout(0.25),
-                swerveCommands.get(0).withTimeout(trajectories.get(0).getTotalTimeSeconds()),
+                new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.NONE, KICKER_SPEED.NONE),
+                new AutoWristSetpoint(wrist, SETPOINT.STOWED))
+            .withTimeout(0.25),
+        swerveCommands.get(0).withTimeout(trajectories.get(0).getTotalTimeSeconds()),
         //     new ParallelCommandGroup(
         //         swerveCommands.get(1),
         //         new AutoWristSetpoint(wrist, SETPOINT.STOWED),
-        //         new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH, KICKER_SPEED.STALL)).withTimeout(trajectories.get(1).getTotalTimeSeconds()),
+        //         new AutoRunIntakeMotors(intakeShooter, FLYWHEEL_SPEED.HIGH,
+        // KICKER_SPEED.STALL)).withTimeout(trajectories.get(1).getTotalTimeSeconds()),
 
         // // run flywheel
         // new AutoWristSetpoint(wrist, SETPOINT.SCORE_HIGH_CUBE),
