@@ -1,5 +1,3 @@
 package frc.robot.commands.swerve;
 
-public @interface parma {
-
-}
+public @interface parma {}

@@ -130,6 +130,7 @@ public class RobotContainer {
     //     .whileTrue((new WristHandler(m_wrist, BASE.SETPOINT.INTAKING_LOW_CUBE,
     // xboxController::getLeftY)));
   }
+
   public void disableInit() {
     m_swerveDrive.setNeutral(NeutralMode.Coast);
     // m_wrist.setNeutralMode(IdleMode.kCoast);
@@ -170,7 +171,7 @@ public class RobotContainer {
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
     SmartDashboard.putData("Auto Selector", m_autoChooser);
-  SmartDashboard.putData(new ToggleSwerveTestMode(m_swerveDrive));
+    SmartDashboard.putData(new ToggleSwerveTestMode(m_swerveDrive));
   }
 
   public void periodic() {

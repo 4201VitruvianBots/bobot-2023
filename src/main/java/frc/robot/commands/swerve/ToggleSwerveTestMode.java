@@ -5,7 +5,6 @@
 package frc.robot.commands.swerve;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -22,8 +21,8 @@ public class ToggleSwerveTestMode extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SwerveSetTestMode(swerveDriveSubsystem), 
-      new SetSwerveNeutralMode(swerveDriveSubsystem, NeutralMode.Brake)
-      .andThen(() -> swerveDriveSubsystem.drive(0, 0, 0, isFinished(), isFinished())));
+        new SwerveSetTestMode(swerveDriveSubsystem),
+        new SetSwerveNeutralMode(swerveDriveSubsystem, NeutralMode.Brake)
+            .andThen(() -> swerveDriveSubsystem.drive(0, 0, 0, isFinished(), isFinished())));
   }
 }
